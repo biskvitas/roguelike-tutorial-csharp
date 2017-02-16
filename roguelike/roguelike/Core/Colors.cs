@@ -1,5 +1,4 @@
 ﻿using RLNET;
-
 namespace roguelike.Core
 {
     class Colors
