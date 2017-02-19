@@ -129,8 +129,14 @@ namespace roguelike
         {
             if (_renderRequired)
             {
-                DungeonMap.Draw(_mapConsole);
+                _mapConsole.Clear();
+                _statConsole.Clear();
+                _messageConsole.Clear();
+
+                MessageLog.Draw(_messageConsole);
+                DungeonMap.Draw(_mapConsole, _statConsole);
                 Player.Draw(_mapConsole, DungeonMap);
+                Player.DrawStats(_statConsole);
 
                 // Blit the sub consoles to the root console in the correct locations
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
