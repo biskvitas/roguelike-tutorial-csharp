@@ -1,6 +1,8 @@
 ﻿using RLNET;
 using roguelike.Core;
 using roguelike.Systems;
+using RogueSharp.Random;
+using System;
 
 namespace roguelike
 {
@@ -35,22 +37,30 @@ namespace roguelike
 
         public static CommandSystem CommandSystem { get; private set; }
         public static DungeonMap DungeonMap { get; private set; }
-        public static Player Player { get; private set; }
+        public static Player Player { get; set; }
+        // Singleton of IRandom used throughout the game when generating random numbers
+        public static IRandom Random { get; private set; }
 
         public static void Main()
         {
+            // Establish the seed for the random number generator from the current time
+            int seed = (int)DateTime.UtcNow.Ticks;
+            Random = new DotNetRandom(seed);
+
+            // The title will appear at the top of the console window 
+            // also include the seed used to generate the level
+            string consoleTitle = $"RougeSharp V3 Tutorial - Level 1 - Seed {seed}";
+
+
             CommandSystem = new CommandSystem();
-            Player = new Player();
             // The next two lines already existed
-            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 15, 8);
             DungeonMap = mapGenerator.CreateMap();
             // End of existing code
             DungeonMap.UpdatePlayerFieldOfView();
 
             // This must be the exact name of the bitmap font file we are using or it will error.
             string fontFileName = "terminal8x8.png";
-            // The title will appear at the top of the console window
-            string consoleTitle = "RougeSharp V3 Tutorial - Level 1";
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
             // Initialize the sub consoles that we will Blit to the root console

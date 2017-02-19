@@ -1,11 +1,20 @@
 ﻿using RogueSharp;
 using RLNET;
+using System.Collections.Generic;
 
 namespace roguelike.Core
 {
     // Our custom DungeonMap class extends the base RogueSharp Map class
     public class DungeonMap : Map
     {
+        public List<Rectangle> Rooms;
+
+        public DungeonMap()
+        {
+            // Initialize the list of rooms when we create a new DungeonMap
+            Rooms = new List<Rectangle>();
+        }
+
         // The Draw method will be called each time the map is updated
         // It will render all of the symbols/colors for each cell to the map sub console
         public void Draw(RLConsole mapConsole)
@@ -97,6 +106,14 @@ namespace roguelike.Core
         {
             Cell cell = GetCell(x, y);
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
+        }
+
+        // Called by MapGenerator after we generate a new map to add the player to the map
+        public void AddPlayer(Player player)
+        {
+            Game.Player = player;
+            SetIsWalkable(player.X, player.Y, false);
+            UpdatePlayerFieldOfView();
         }
     }
 }

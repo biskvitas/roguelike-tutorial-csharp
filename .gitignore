@@ -49,4 +49,4 @@ Temporary Items
 /roguelike/roguelike/bin
 /roguelike/packages
 /roguelike/roguelike/obj/Debug
-*.suo
+**/*.suo
