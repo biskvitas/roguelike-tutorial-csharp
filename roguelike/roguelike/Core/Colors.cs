@@ -17,5 +17,9 @@ namespace roguelike.Core
         public static RLColor Wall = Swatch.Secondary;
         public static RLColor WallBackgroundFov = Swatch.SecondaryDarker;
         public static RLColor WallFov = Swatch.SecondaryLighter;
-    }
+		public static RLColor DoorBackground = Swatch.ComplimentDarkest;
+		public static RLColor Door = Swatch.ComplimentLighter;
+		public static RLColor DoorBackgroundFov = Swatch.ComplimentDarker;
+		public static RLColor DoorFov = Swatch.ComplimentLightest;
+	}
 }
