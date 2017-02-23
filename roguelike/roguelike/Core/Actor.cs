@@ -5,7 +5,7 @@ using System;
 
 namespace roguelike.Core
 {
-    public class Actor : IActor, IDrawable
+    public class Actor : IActor, IDrawable, IScheduleable
     {
         // IActor
         private int _attack;
@@ -19,7 +19,9 @@ namespace roguelike.Core
         private string _name;
         private int _speed;
 
-        public int Attack
+		public int Time => Speed;
+
+	    public int Attack
         {
             get
             {

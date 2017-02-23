@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using roguelike.Behaviors;
+using roguelike.Systems;
 
 namespace roguelike.Core
 {
@@ -29,5 +31,13 @@ namespace roguelike.Core
             // Print the monsters name over top of the health bar
             statConsole.Print(2, yPosition, $": {Name}", Swatch.DbLight);
         }
-    }
+
+		public int? TurnsAlerted { get; set; }
+
+		public virtual void PerformAction(CommandSystem commandSystem)
+		{
+			var behavior = new StandardMoveAndAttack();
+			behavior.Act(this, commandSystem);
+		}
+	}
 }
