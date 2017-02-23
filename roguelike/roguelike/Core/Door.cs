@@ -22,10 +22,7 @@ namespace roguelike.Core
 
 		public void Draw(RLConsole console, IMap map)
 		{
-			if (!map.GetCell(X, Y).IsExplored)
-			{
-				return;
-			}
+			if (!map.GetCell(X, Y).IsExplored) return;
 
 			Symbol = IsOpen ? '-' : '+';
 			if (map.IsInFov(X, Y))

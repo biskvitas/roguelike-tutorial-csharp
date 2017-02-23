@@ -3,13 +3,16 @@ using roguelike.Core;
 using roguelike.Systems;
 using RogueSharp.Random;
 using System;
+using System.Text;
 
 namespace roguelike
 {
     public class Game
     {
-        // The screen height and width are in number of tiles
-        private static readonly int _screenWidth = 150;
+	    private const string FontFileName = "terminal8x8.png";
+
+		// The screen height and width are in number of tiles
+		private static readonly int _screenWidth = 150;
         private static readonly int _screenHeight = 70;
         private static RLRootConsole _rootConsole;
 
@@ -46,34 +49,26 @@ namespace roguelike
 		public static void Main()
         {
 			SchedulingSystem = new SchedulingSystem();
+			CommandSystem = new CommandSystem();
+			MessageLog = new MessageLog();
+
 			// Establish the seed for the random number generator from the current time
 			int seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
-
-            // The title will appear at the top of the console window 
-            // also include the seed used to generate the level
-            string consoleTitle = $"RougeSharp V3 Tutorial - Level 1 - Seed {seed}";
-
-
-            CommandSystem = new CommandSystem();
-            // The next two lines already existed
+                  
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 15, 8);
             DungeonMap = mapGenerator.CreateMap();
-            // End of existing code
             DungeonMap.UpdatePlayerFieldOfView();
 
-            // This must be the exact name of the bitmap font file we are using or it will error.
-            string fontFileName = "terminal8x8.png";
-            // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
-            _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
+			// Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
+			_rootConsole = new RLRootConsole(FontFileName, _screenWidth, _screenHeight, 8, 8, 1f, $"RougeSharp V3 Tutorial - Level 1 - Seed {seed}");
             // Initialize the sub consoles that we will Blit to the root console
             _mapConsole = new RLConsole(_mapWidth, _mapHeight);
             _messageConsole = new RLConsole(_messageWidth, _messageHeight);
             _statConsole = new RLConsole(_statWidth, _statHeight);
             _inventoryConsole = new RLConsole(_inventoryWidth, _inventoryHeight);
 
-            // Create a new MessageLog and print the random seed used to generate the level
-            MessageLog = new MessageLog();
+
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
 
@@ -81,10 +76,10 @@ namespace roguelike
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Swatch.DbWood);
             _inventoryConsole.Print(1, 1, "Inventory", Colors.TextHeading);
 
-            // Set up a handler for RLNET's Update event
+            // Attach Events
             _rootConsole.Update += OnRootConsoleUpdate;
-            // Set up a handler for RLNET's Render event
             _rootConsole.Render += OnRootConsoleRender;
+
             // Begin RLNET's game loop
             _rootConsole.Run();
         }
@@ -95,42 +90,37 @@ namespace roguelike
 			bool didPlayerAct = false;
 			RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
 
-			if (CommandSystem.IsPlayerTurn)
-			{
-				if (keyPress != null)
-				{
-					if (keyPress.Key == RLKey.Up)
-					{
-						didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
-					}
-					else if (keyPress.Key == RLKey.Down)
-					{
-						didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
-					}
-					else if (keyPress.Key == RLKey.Left)
-					{
-						didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
-					}
-					else if (keyPress.Key == RLKey.Right)
-					{
-						didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
-					}
-					else if (keyPress.Key == RLKey.Escape)
-					{
-						_rootConsole.Close();
-					}
-				}
-
-				if (didPlayerAct)
-				{
-					_renderRequired = true;
-					CommandSystem.EndPlayerTurn();
-				}
-			}
-			else
+			if (!CommandSystem.IsPlayerTurn)
 			{
 				CommandSystem.ActivateMonsters();
 				_renderRequired = true;
+			}
+
+			if (keyPress == null) return;
+		
+			switch (keyPress.Key)
+			{
+				case RLKey.Up:
+					didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
+					break;
+				case RLKey.Down:
+					didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
+					break;
+				case RLKey.Left:
+					didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
+					break;
+				case RLKey.Right:
+					didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
+					break;
+				case RLKey.Escape:
+					_rootConsole.Close();
+					break;
+			}
+			
+			if (didPlayerAct)
+			{
+				_renderRequired = true;
+				CommandSystem.EndPlayerTurn();
 			}
 		}
     

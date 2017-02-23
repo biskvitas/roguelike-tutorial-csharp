@@ -45,14 +45,8 @@ namespace roguelike.Core
                     i++;
                 }
             }
-            foreach (Monster monster in _monsters)
-            {
-                monster.Draw(mapConsole, this);
-            }
-	        foreach (Door door in Doors)
-	        {
-		        door.Draw(mapConsole, this);
-	        }
+			_monsters.ForEach(m => m.Draw(mapConsole,this));
+			Doors.ForEach(d => d.Draw(mapConsole, this));
         }
 
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
