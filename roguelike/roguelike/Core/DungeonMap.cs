@@ -29,21 +29,15 @@ namespace roguelike.Core
             {
                 SetConsoleSymbolForCell(mapConsole, cell);
             }
-            // Keep an index so we know which position to draw monster stats at
-            int i = 0;
 
-            // Iterate through each monster on the map and draw it after drawing the Cells
+            int i = 0;
             foreach (Monster monster in _monsters)
             {
-                // When the monster is in the field-of-view also draw their stats
-                if (IsInFov(monster.X, monster.Y))
-                {
-                    monster.Draw(mapConsole, this);
+	            if (!IsInFov(monster.X, monster.Y)) continue;
 
-                    // Pass in the index to DrawStats and increment it afterwards
-                    monster.DrawStats(statConsole, i);
-                    i++;
-                }
+				monster.Draw(mapConsole, this);
+	            monster.DrawStats(statConsole, i);
+	            i++;
             }
 			_monsters.ForEach(m => m.Draw(mapConsole,this));
 			Doors.ForEach(d => d.Draw(mapConsole, this));
@@ -52,17 +46,13 @@ namespace roguelike.Core
         private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
         {
             // When we haven't explored a cell yet, we don't want to draw anything
-            if (!cell.IsExplored)
-            {
-                return;
-            }
-
+	        if (!cell.IsExplored) return;
+           
             // When a cell is currently in the field-of-view it should be drawn with ligher colors
             if (IsInFov(cell.X, cell.Y))
             {
-                // Choose the symbol to draw based on if the cell is walkable or not
-                // '.' for floor and '#' for walls
-                if (cell.IsWalkable)
+				// Choose the symbol to draw based on if the cell is walkable or not
+				if (cell.IsWalkable)
                 {
                     console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.FloorBackgroundFov, '.');
                 }
@@ -104,27 +94,24 @@ namespace roguelike.Core
         // Returns true when able to place the Actor on the cell or false otherwise
         public bool SetActorPosition(Actor actor, int x, int y)
         {
-            // Only allow actor placement if the cell is walkable
-            if (GetCell(x, y).IsWalkable)
-            {
-                // The cell the actor was previously on is now walkable
-                SetIsWalkable(actor.X, actor.Y, true);
-                // Update the actor's position
-                actor.X = x;
-                actor.Y = y;
-                // The new cell the actor is on is now not walkable
-                SetIsWalkable(actor.X, actor.Y, false);
-				// Try to open a door if one exists here
-				OpenDoor(actor, x, y);
+	        if (!GetCell(x, y).IsWalkable) return false;
 
-				// Don't forget to update the field of view if we just repositioned the player
-				if (actor is Player)
-                {
-                    UpdatePlayerFieldOfView();
-                }
-                return true;
-            }
-            return false;
+	        // The cell the actor was previously on is now walkable
+	        SetIsWalkable(actor.X, actor.Y, true);
+	        // Update the actor's position
+	        actor.X = x;
+	        actor.Y = y;
+	        // The new cell the actor is on is now not walkable
+	        SetIsWalkable(actor.X, actor.Y, false);
+	        // Try to open a door if one exists here
+	        OpenDoor(actor, x, y);
+
+	        if (actor is Player)
+	        {
+		        UpdatePlayerFieldOfView();
+	        }
+
+	        return true;
         }
 
         // A helper method for setting the IsWalkable property on a Cell
@@ -154,20 +141,18 @@ namespace roguelike.Core
         // Look for a random location in the room that is walkable.
         public Point GetRandomWalkableLocationInRoom(Rectangle room)
         {
-            if (DoesRoomHaveWalkableSpace(room))
-            {
-                for (int i = 0; i < 100; i++)
-                {
-                    int x = Game.Random.Next(1, room.Width - 2) + room.X;
-                    int y = Game.Random.Next(1, room.Height - 2) + room.Y;
-                    if (IsWalkable(x, y))
-                    {
-                        return new Point(x, y);
-                    }
-                }
-            }
+	        if (!DoesRoomHaveWalkableSpace(room)) return null;
+	        for (int i = 0; i < 100; i++)
+	        {
+		        int x = Game.Random.Next(1, room.Width - 2) + room.X;
+		        int y = Game.Random.Next(1, room.Height - 2) + room.Y;
+		        if (IsWalkable(x, y))
+		        {
+			        return new Point(x, y);
+		        }
+	        }
 
-            // If we didn't find a walkable location in the room return null
+	        // If we didn't find a walkable location in the room return null
             return null;
         }
 
@@ -200,13 +185,11 @@ namespace roguelike.Core
 			return _monsters.FirstOrDefault(m => m.X == x && m.Y == y);
 		}
 
-		// Return the door at the x,y position or null if one is not found.
 		public Door GetDoor(int x, int y)
 		{
 			return Doors.SingleOrDefault(d => d.X == x && d.Y == y);
 		}
-
-		// The actor opens the door located at the x,y position
+		
 		private void OpenDoor(Actor actor, int x, int y)
 		{
 			Door door = GetDoor(x, y);

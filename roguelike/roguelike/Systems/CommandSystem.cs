@@ -18,35 +18,22 @@ namespace roguelike.Systems
             switch (direction)
             {
                 case Direction.Up:
-                    {
                         y = Game.Player.Y - 1;
                         break;
-                    }
                 case Direction.Down:
-                    {
                         y = Game.Player.Y + 1;
                         break;
-                    }
                 case Direction.Left:
-                    {
                         x = Game.Player.X - 1;
                         break;
-                    }
                 case Direction.Right:
-                    {
                         x = Game.Player.X + 1;
                         break;
-                    }
                 default:
-                    {
                         return false;
-                    }
             }
 
-            if (Game.DungeonMap.SetActorPosition(Game.Player, x, y))
-            {
-                return true;
-            }
+	        if (Game.DungeonMap.SetActorPosition(Game.Player, x, y)) return true;
 
 			Monster monster = Game.DungeonMap.GetMonsterAt(x, y);
 
@@ -203,12 +190,10 @@ namespace roguelike.Systems
 
 		public void MoveMonster(Monster monster, Cell cell)
 		{
-			if (!Game.DungeonMap.SetActorPosition(monster, cell.X, cell.Y))
+			if (Game.DungeonMap.SetActorPosition(monster, cell.X, cell.Y)) return;
+			if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
 			{
-				if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
-				{
-					Attack(monster, Game.Player);
-				}
+				Attack(monster, Game.Player);
 			}
 		}
 	}
