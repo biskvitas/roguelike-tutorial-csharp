@@ -68,7 +68,7 @@ namespace roguelike
             Components.Add(sadConsoleComponent);
             */
 
-            SadConsole.Engine.Initialize("IBM.font", 150, 71);
+            SadConsole.Engine.Initialize("IBM.font", 150, 50);
 
             SadConsole.Engine.EngineStart += EngineStart;
             SadConsole.Engine.EngineUpdated += EngineUpdated;
