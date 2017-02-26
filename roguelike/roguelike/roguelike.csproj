@@ -88,6 +88,7 @@
     <Compile Include="Interfaces\IScheduleable.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="MapObjects\Floor.cs" />
+    <Compile Include="MapObjects\MapObjectBase.cs" />
     <Compile Include="MapObjects\Wall.cs" />
     <Compile Include="Monsters\Kobold.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
