@@ -4,15 +4,14 @@ using SadConsole.Game;
 using SadConsole.Consoles;
 using System;
 using System.Collections.Generic;
+using roguelike.Entities;
 
 namespace roguelike.Consoles
 {
     public class MapConsole : SadConsole.Consoles.Console
     {
-        GameObject playerEntity;
-
         RogueSharp.FieldOfView rogueFOV;
-        public GameObject Player { get { return playerEntity; } }
+        public GameObject Player { get; private set; }
         MapObjects.MapObjectBase[,] mapData;
         RogueSharp.Map rogueMap;
         IReadOnlyCollection<RogueSharp.Cell> previousFOV = new List<RogueSharp.Cell>();
@@ -20,56 +19,46 @@ namespace roguelike.Consoles
         public MapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight): base(mapWidth, mapHeight)
         {
             TextSurface.RenderArea = new Rectangle(0, 0, viewWidth, viewHeight);
-
-            AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, Engine.DefaultFont);
-            playerAnimation.CreateFrame();
-            playerAnimation.CurrentFrame[0].Foreground = Color.Orange;
-            playerAnimation.CurrentFrame[0].GlyphIndex = '@';
-
-            playerEntity = new GameObject(Engine.DefaultFont);
-            playerEntity.Animation = playerAnimation;
-
-            playerEntity.Position = new Point(0, 0);
-
+            Player = new Player();           
             GenerateMap();
         }
 
         public override void Render()
         {
             base.Render();
-            playerEntity.Render();
+            Player.Render();
         }
         public override void Update()
         {
             base.Update();
-            playerEntity.Update();
+            Player.Update();
         }
 
         public void MovePlayerBy(Point amount)
         {
             // Get the position the player will be at
-            Point newPosition = playerEntity.Position + amount;
+            Point newPosition = Player.Position + amount;
 
-            // Check to see if the position is within the map
+            // TODO: might need to add additional check to avoid drawing in inventory
             if (new Rectangle(0, 6, Width, Height).Contains(newPosition) && rogueMap.IsWalkable(newPosition.X, newPosition.Y))
             {
                 // Move the player
-                playerEntity.Position += amount;
+                Player.Position += amount;
 
-                // Scroll the view area to center the player on the screen
-                TextSurface.RenderArea = new Rectangle(playerEntity.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                        playerEntity.Position.Y - (TextSurface.RenderArea.Height / 2),
+                // TODO: fix this possitioning horror
+                TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                        Player.Position.Y - (TextSurface.RenderArea.Height / 2),
                                                         TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
                 // If he view area moved, we'll keep our entity in sync with it.
-                playerEntity.RenderOffset = this.Position - TextSurface.RenderArea.Location;
+                Player.RenderOffset = this.Position - TextSurface.RenderArea.Location;
 
                 // Erase status on old FOV
                 foreach (var cell in previousFOV)
                     mapData[cell.X, cell.Y].RemoveCellFromView(this[cell.X, cell.Y]);
 
                 // Calculate the new FOV
-                previousFOV = rogueFOV.ComputeFov(playerEntity.Position.X, playerEntity.Position.Y, 10, true);
+                previousFOV = rogueFOV.ComputeFov(Player.Position.X, Player.Position.Y, 10, true);
 
                 // Set status on new FOV
                 foreach (var cell in previousFOV)
@@ -121,14 +110,14 @@ namespace roguelike.Consoles
                 // Add appropriate fix to avoid putting player in inventory bar
                 if (y > 5  && rogueMap.IsWalkable(x, y))
                 {
-                    playerEntity.Position = new Point(x, y);
+                    Player.Position = new Point(x, y);
 
                     // TODO: fix possitioning code
-                    TextSurface.RenderArea = new Rectangle(playerEntity.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                            playerEntity.Position.Y - (TextSurface.RenderArea.Height / 2),
+                    TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                            Player.Position.Y - (TextSurface.RenderArea.Height / 2),
                                                             TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
-                    playerEntity.RenderOffset = Position - TextSurface.RenderArea.Location;
+                    Player.RenderOffset = Position - TextSurface.RenderArea.Location;
                     MovePlayerBy(new Point(0, 0));
                     break;
                 }

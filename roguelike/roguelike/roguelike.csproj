@@ -74,12 +74,15 @@
     <Compile Include="Consoles\StatConsole.cs" />
     <Compile Include="Core\Actor.cs" />
     <Compile Include="Core\Colors.cs" />
+    <Compile Include="Core\Player.cs" />
+    <Compile Include="Core\Swatch.cs" />
+    <Compile Include="Utils\Colors.cs" />
     <Compile Include="Core\Direction.cs" />
     <Compile Include="Core\Door.cs" />
     <Compile Include="Core\DungeonMap.cs" />
     <Compile Include="Core\Monster.cs" />
-    <Compile Include="Core\Player.cs" />
-    <Compile Include="Core\Swatch.cs" />
+    <Compile Include="Entities\Player.cs" />
+    <Compile Include="Utils\Swatch.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Interfaces\IActor.cs" />
