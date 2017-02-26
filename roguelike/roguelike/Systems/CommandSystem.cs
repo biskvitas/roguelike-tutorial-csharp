@@ -33,6 +33,7 @@ namespace roguelike.Systems
                         return false;
             }
 
+            /* note: tmp comment out 
 	        if (Game.DungeonMap.SetActorPosition(Game.Player, x, y)) return true;
 
 			Monster monster = Game.DungeonMap.GetMonsterAt(x, y);
@@ -42,6 +43,7 @@ namespace roguelike.Systems
 				Attack(Game.Player, monster);
 				return true;
 			}
+            */
 
 			return false;
         }
@@ -154,7 +156,7 @@ namespace roguelike.Systems
 			}
 			else if (defender is Monster)
 			{
-				Game.DungeonMap.RemoveMonster((Monster)defender);
+				//Game.DungeonMap.RemoveMonster((Monster)defender);
 
 				Game.MessageLog.Add($"  {defender.Name} died and dropped {defender.Gold} gold");
 			}
@@ -190,7 +192,7 @@ namespace roguelike.Systems
 
 		public void MoveMonster(Monster monster, Cell cell)
 		{
-			if (Game.DungeonMap.SetActorPosition(monster, cell.X, cell.Y)) return;
+			//if (Game.DungeonMap.SetActorPosition(monster, cell.X, cell.Y)) return;
 			if (Game.Player.X == cell.X && Game.Player.Y == cell.Y)
 			{
 				Attack(monster, Game.Player);

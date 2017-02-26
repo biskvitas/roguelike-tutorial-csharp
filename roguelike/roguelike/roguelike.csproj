@@ -76,6 +76,8 @@
     <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\Player.cs" />
     <Compile Include="Core\Swatch.cs" />
+    <Compile Include="Entities\Monsters\Kobold.cs" />
+    <Compile Include="Entities\Monsters\Monster.cs" />
     <Compile Include="Utils\Colors.cs" />
     <Compile Include="Core\Direction.cs" />
     <Compile Include="Core\Door.cs" />

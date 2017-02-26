@@ -1,10 +1,7 @@
 ﻿using roguelike.Core;
-using roguelike.Monsters;
 using RogueSharp;
-using RogueSharp.DiceNotation;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace roguelike.Systems
 {
@@ -89,10 +86,9 @@ namespace roguelike.Systems
             foreach (Rectangle room in _map.Rooms)
             {
                 CreateRoom(room);
-				CreateDoors(room);
+				//CreateDoors(room); // TODO: later
 			}
-            PlacePlayer();
-            PlaceMonsters();
+            //PlaceMonsters(); TODO : should be separate public method that returns list of monster entities
 
             return _map;
         }
@@ -100,7 +96,7 @@ namespace roguelike.Systems
         // Carve a tunnel out of the map parallel to the x-axis
         private void CreateHorizontalTunnel(int xStart, int xEnd, int yPosition)
         {
-            for (int x = System.Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
+            for (int x = Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
             {
                 _map.SetCellProperties(x, yPosition, true, true);
             }
@@ -123,123 +119,115 @@ namespace roguelike.Systems
             {
                 for (int y = room.Top + 1; y < room.Bottom; y++)
                 {
-                    _map.SetCellProperties(x, y, true, true, false  );
+                    _map.SetCellProperties(x, y, true, true, false);
                 }
             }
         }
 
-        // Find the center of the first room that we created and place the Player there
-        private void PlacePlayer()
+        /*
+    private void PlaceMonsters()
+    {
+        foreach (var room in _map.Rooms)
         {
-            Player player = Game.Player;
-            if (player == null)
+            // Each room has a 60% chance of having monsters
+            if (Dice.Roll("1D10") < 7)
             {
-                player = new Player();
-            }
-
-            player.X = _map.Rooms[0].Center.X;
-            player.Y = _map.Rooms[0].Center.Y;
-
-            _map.AddPlayer(player);
-        }
-
-        private void PlaceMonsters()
-        {
-            foreach (var room in _map.Rooms)
-            {
-                // Each room has a 60% chance of having monsters
-                if (Dice.Roll("1D10") < 7)
+                // Generate between 1 and 4 monsters
+                var numberOfMonsters = Dice.Roll("1D4");
+                for (int i = 0; i < numberOfMonsters; i++)
                 {
-                    // Generate between 1 and 4 monsters
-                    var numberOfMonsters = Dice.Roll("1D4");
-                    for (int i = 0; i < numberOfMonsters; i++)
+                    // Find a random walkable location in the room to place the monster
+                    Point randomRoomLocation = _map.GetRandomWalkableLocationInRoom(room);
+                    // It's possible that the room doesn't have space to place a monster
+                    // In that case skip creating the monster
+                    if (randomRoomLocation != null)
                     {
-                        // Find a random walkable location in the room to place the monster
-                        Point randomRoomLocation = _map.GetRandomWalkableLocationInRoom(room);
-                        // It's possible that the room doesn't have space to place a monster
-                        // In that case skip creating the monster
-                        if (randomRoomLocation != null)
-                        {
-                            // Temporarily hard code this monster to be created at level 1
-                            var monster = Kobold.Create(1);
-                            monster.X = randomRoomLocation.X;
-                            monster.Y = randomRoomLocation.Y;
-                            _map.AddMonster(monster);
-                        }
+                        // Temporarily hard code this monster to be created at level 1
+                        var monster = Kobold.Create(1);
+                        monster.X = randomRoomLocation.X;
+                        monster.Y = randomRoomLocation.Y;
+                        _map.AddMonster(monster);
                     }
                 }
             }
         }
 
-		private void CreateDoors(Rectangle room)
-		{
-			// The the boundries of the room
-			int xMin = room.Left;
-			int xMax = room.Right;
-			int yMin = room.Top;
-			int yMax = room.Bottom;
+    }
+    */
+        /*
+        private void CreateDoors(Rectangle room)
+        {
+            // The the boundries of the room
+            int xMin = room.Left;
+            int xMax = room.Right;
+            int yMin = room.Top;
+            int yMax = room.Bottom;
 
-			// Put the rooms border cells into a list
-			List<Cell> borderCells = _map.GetCellsAlongLine(xMin, yMin, xMax, yMin).ToList();
-			borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMin, xMin, yMax));
-			borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMax, xMax, yMax));
-			borderCells.AddRange(_map.GetCellsAlongLine(xMax, yMin, xMax, yMax));
+            // Put the rooms border cells into a list
+            List<Cell> borderCells = _map.GetCellsAlongLine(xMin, yMin, xMax, yMin).ToList();
+            borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMin, xMin, yMax));
+            borderCells.AddRange(_map.GetCellsAlongLine(xMin, yMax, xMax, yMax));
+            borderCells.AddRange(_map.GetCellsAlongLine(xMax, yMin, xMax, yMax));
 
-			// Go through each of the rooms border cells and look for locations to place doors.
-			foreach (Cell cell in borderCells)
-			{
-				if (IsPotentialDoor(cell))
-				{
-					// A door must block field-of-view when it is closed.
-					_map.SetCellProperties(cell.X, cell.Y, false, true);
-					_map.Doors.Add(new Door
-					{
-						X = cell.X,
-						Y = cell.Y,
-						IsOpen = false
-					});
-				}
-			}
-		}
 
-		// Checks to see if a cell is a good candidate for placement of a door
-		private bool IsPotentialDoor(Cell cell)
-		{
-			// If the cell is not walkable
-			// then it is a wall and not a good place for a door
-			if (!cell.IsWalkable)
-			{
-				return false;
-			}
+            // Go through each of the rooms border cells and look for locations to place doors.
+            foreach (Cell cell in borderCells)
+            {
+                if (IsPotentialDoor(cell))
+                {
+                    // A door must block field-of-view when it is closed.
+                    _map.SetCellProperties(cell.X, cell.Y, false, true);
+                    _map.Doors.Add(new Door
+                    {
+                        X = cell.X,
+                        Y = cell.Y,
+                        IsOpen = false
+                    });
+                }
+            }
 
-			// Store references to all of the neighboring cells 
-			Cell right = _map.GetCell(cell.X + 1, cell.Y);
-			Cell left = _map.GetCell(cell.X - 1, cell.Y);
-			Cell top = _map.GetCell(cell.X, cell.Y - 1);
-			Cell bottom = _map.GetCell(cell.X, cell.Y + 1);
+        }
 
-			// Make sure there is not already a door here
-			if (_map.GetDoor(cell.X, cell.Y) != null ||
-				_map.GetDoor(right.X, right.Y) != null ||
-				_map.GetDoor(left.X, left.Y) != null ||
-				_map.GetDoor(top.X, top.Y) != null ||
-				_map.GetDoor(bottom.X, bottom.Y) != null)
-			{
-				return false;
-			}
 
-			// This is a good place for a door on the left or right side of the room
-			if (right.IsWalkable && left.IsWalkable && !top.IsWalkable && !bottom.IsWalkable)
-			{
-				return true;
-			}
+        // Checks to see if a cell is a good candidate for placement of a door
+        private bool IsPotentialDoor(Cell cell)
+        {
+            // If the cell is not walkable
+            // then it is a wall and not a good place for a door
+            if (!cell.IsWalkable)
+            {
+                return false;
+            }
 
-			// This is a good place for a door on the top or bottom of the room
-			if (!right.IsWalkable && !left.IsWalkable && top.IsWalkable && bottom.IsWalkable)
-			{
-				return true;
-			}
-			return false;
-		}
-	}
+            // Store references to all of the neighboring cells 
+            Cell right = _map.GetCell(cell.X + 1, cell.Y);
+            Cell left = _map.GetCell(cell.X - 1, cell.Y);
+            Cell top = _map.GetCell(cell.X, cell.Y - 1);
+            Cell bottom = _map.GetCell(cell.X, cell.Y + 1);
+
+            // Make sure there is not already a door here
+            if (_map.GetDoor(cell.X, cell.Y) != null ||
+                _map.GetDoor(right.X, right.Y) != null ||
+                _map.GetDoor(left.X, left.Y) != null ||
+                _map.GetDoor(top.X, top.Y) != null ||
+                _map.GetDoor(bottom.X, bottom.Y) != null)
+            {
+                return false;
+            }
+
+            // This is a good place for a door on the left or right side of the room
+            if (right.IsWalkable && left.IsWalkable && !top.IsWalkable && !bottom.IsWalkable)
+            {
+                return true;
+            }
+
+            // This is a good place for a door on the top or bottom of the room
+            if (!right.IsWalkable && !left.IsWalkable && top.IsWalkable && bottom.IsWalkable)
+            {
+                return true;
+            }
+            return false;
+        }
+        */
+    }
 }

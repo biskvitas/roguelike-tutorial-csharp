@@ -21,7 +21,7 @@ namespace roguelike.Entities
         public string Name { get; set; }
         public int Speed { get; set; }
 
-        public Player()
+        public Player() : base(Engine.DefaultFont)
         {
             AnimatedTextSurface playerAnimation = new AnimatedTextSurface("default", 1, 1, Engine.DefaultFont);
             playerAnimation.CreateFrame();

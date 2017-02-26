@@ -1,7 +1,6 @@
 ﻿using RogueSharp;
-using RLNET;
 using System.Collections.Generic;
-using System.Linq;
+
 
 namespace roguelike.Core
 {
@@ -17,9 +16,15 @@ namespace roguelike.Core
             // Initialize the list of rooms when we create a new DungeonMap
             Rooms = new List<Rectangle>();
             _monsters = new List<Monster>();
-			Doors = new List<Door>();
+			//Doors = new List<Door>();
 		}
 
+        public Microsoft.Xna.Framework.Point getPlayerStartingPosition(int xOffSet, int yOffSet)
+        {
+            return new Microsoft.Xna.Framework.Point(Rooms[0].Center.X + xOffSet, Rooms[0].Center.Y + yOffSet);
+        }
+
+        /*
         // The Draw method will be called each time the map is updated
         // It will render all of the symbols/colors for each cell to the map sub console
         public void Draw(RLConsole mapConsole, RLConsole statConsole)
@@ -41,39 +46,8 @@ namespace roguelike.Core
             }
 			_monsters.ForEach(m => m.Draw(mapConsole,this));
 			Doors.ForEach(d => d.Draw(mapConsole, this));
-        }
-
-        private void SetConsoleSymbolForCell(RLConsole console, Cell cell)
-        {
-            // When we haven't explored a cell yet, we don't want to draw anything
-	        if (!cell.IsExplored) return;
-           
-            // When a cell is currently in the field-of-view it should be drawn with ligher colors
-            if (IsInFov(cell.X, cell.Y))
-            {
-				// Choose the symbol to draw based on if the cell is walkable or not
-				if (cell.IsWalkable)
-                {
-                    console.Set(cell.X, cell.Y, Colors.FloorFov, Colors.FloorBackgroundFov, '.');
-                }
-                else
-                {
-                    console.Set(cell.X, cell.Y, Colors.WallFov, Colors.WallBackgroundFov, '#');
-                }
-            }
-            // When a cell is outside of the field of view draw it with darker colors
-            else
-            {
-                if (cell.IsWalkable)
-                {
-                    console.Set(cell.X, cell.Y, Colors.Floor, Colors.FloorBackground, '.');
-                }
-                else
-                {
-                    console.Set(cell.X, cell.Y, Colors.Wall, Colors.WallBackground, '#');
-                }
-            }
-        }
+        }     
+       
 
         // This method will be called any time we move the player to update field-of-view
         public void UpdatePlayerFieldOfView()
@@ -90,6 +64,7 @@ namespace roguelike.Core
                 }
             }
         }
+        
 
         // Returns true when able to place the Actor on the cell or false otherwise
         public bool SetActorPosition(Actor actor, int x, int y)
@@ -113,6 +88,7 @@ namespace roguelike.Core
 
 	        return true;
         }
+         */
 
         // A helper method for setting the IsWalkable property on a Cell
         public void SetIsWalkable(int x, int y, bool isWalkable)
@@ -121,6 +97,7 @@ namespace roguelike.Core
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
         }
 
+        /*
         // Called by MapGenerator after we generate a new map to add the player to the map
         public void AddPlayer(Player player)
         {
@@ -129,7 +106,7 @@ namespace roguelike.Core
             UpdatePlayerFieldOfView();
 			Game.SchedulingSystem.Add(player);
 		}
-
+        
         public void AddMonster(Monster monster)
         {
             _monsters.Add(monster);
@@ -137,9 +114,10 @@ namespace roguelike.Core
             SetIsWalkable(monster.X, monster.Y, false);
 			Game.SchedulingSystem.Add(monster);
 		}
+        */
 
         // Look for a random location in the room that is walkable.
-        public Point GetRandomWalkableLocationInRoom(Rectangle room)
+        public RogueSharp.Point GetRandomWalkableLocationInRoom(Rectangle room)
         {
 	        if (!DoesRoomHaveWalkableSpace(room)) return null;
 	        for (int i = 0; i < 100; i++)
@@ -148,7 +126,7 @@ namespace roguelike.Core
 		        int y = Game.Random.Next(1, room.Height - 2) + room.Y;
 		        if (IsWalkable(x, y))
 		        {
-			        return new Point(x, y);
+			        return new RogueSharp.Point(x, y);
 		        }
 	        }
 
@@ -172,6 +150,7 @@ namespace roguelike.Core
             return false;
         }
 
+        /*
 		public void RemoveMonster(Monster monster)
 		{
 			_monsters.Remove(monster);
@@ -203,5 +182,6 @@ namespace roguelike.Core
 				Game.MessageLog.Add($"{actor.Name} opened a door");
 			}
 		}
+        */
 	}
 }

@@ -36,7 +36,7 @@ namespace roguelike.Consoles
         {
             InventoryConsole = new InventoryConsole(_inventoryWidth, _inventoryHeight);
             StatsConsole = new StatConsole(_statWidth, _statHeight);
-            MapConsole = new MapConsole(_mapWidth, _mapHeight, 300, 300);
+            MapConsole = new MapConsole(_mapWidth, _mapHeight, 100, 100);
             //MapConsole.FillWithRandomGarbage(); // Temporary so we can see where the console is on the screen
             MessageConsole = new MessagesConsole(_messageWidth, _messageHeight);
 
