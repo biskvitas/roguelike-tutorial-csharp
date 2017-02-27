@@ -1,4 +1,7 @@
-﻿using RogueSharp;
+﻿using roguelike.Entities.Monsters;
+using RogueSharp;
+using RogueSharp.DiceNotation;
+using SadConsole.Game;
 using System.Collections.Generic;
 
 
@@ -19,11 +22,42 @@ namespace roguelike.Core
 			//Doors = new List<Door>();
 		}
 
-        public Microsoft.Xna.Framework.Point getPlayerStartingPosition(int xOffSet, int yOffSet)
+        public Microsoft.Xna.Framework.Point getPlayerStartingPosition()
         {
-            return new Microsoft.Xna.Framework.Point(Rooms[0].Center.X + xOffSet, Rooms[0].Center.Y + yOffSet);
+            return new Microsoft.Xna.Framework.Point(Rooms[0].Center.X, Rooms[0].Center.Y);
         }
 
+        public List<Monster> getMonsters(Microsoft.Xna.Framework.Point renderOffset)
+        {
+            List<Monster> monsters = new List<Monster>();
+            foreach (var room in Rooms)
+            {
+                // Each room has a 60% chance of having monsters
+                if (Dice.Roll("1D10") < 7)
+                {
+                    // Generate between 1 and 4 monsters
+                    var numberOfMonsters = Dice.Roll("1D4");
+                    for (int i = 0; i < numberOfMonsters; i++)
+                    {
+                        // Find a random walkable location in the room to place the monster
+                        Point randomRoomLocation = GetRandomWalkableLocationInRoom(room);
+                        // It's possible that the room doesn't have space to place a monster
+                        // In that case skip creating the monster
+                        if (randomRoomLocation != null)
+                        {
+                            // Temporarily hard code this monster to be created at level 1
+                            Monster monster = new Kobold(1);
+                            
+                            monster.Position = new Microsoft.Xna.Framework.Point(randomRoomLocation.X, randomRoomLocation.Y);
+                            //monster.AbsoluteArea = new Microsoft.Xna.Framework.Rectangle(monster.Position, new Microsoft.Xna.Framework.Point(1, 1));                    
+                            monster.RenderOffset = renderOffset;
+                            monsters.Add(monster);
+                        }
+                    }
+                }
+            }
+            return monsters;
+        }
         /*
         // The Draw method will be called each time the map is updated
         // It will render all of the symbols/colors for each cell to the map sub console
@@ -117,7 +151,7 @@ namespace roguelike.Core
         */
 
         // Look for a random location in the room that is walkable.
-        public RogueSharp.Point GetRandomWalkableLocationInRoom(Rectangle room)
+        public Point GetRandomWalkableLocationInRoom(Rectangle room)
         {
 	        if (!DoesRoomHaveWalkableSpace(room)) return null;
 	        for (int i = 0; i < 100; i++)

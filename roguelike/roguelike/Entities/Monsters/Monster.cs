@@ -20,8 +20,8 @@ namespace roguelike.Entities.Monsters
         public int Health { get; set; }
         public int MaxHealth { get; set; }
         public string Name { get; set; }
-        public int Speed { get; set; }
+        public int Speed { get; set; }     
 
-        public Monster(Font font) : base(font) { }
+        public Monster(Font font) : base(font) {}       
     }
 }

@@ -8,6 +8,7 @@ using roguelike.Entities;
 using RogueSharp.DiceNotation;
 using roguelike.Core;
 using roguelike.Systems;
+using roguelike.Entities.Monsters;
 
 namespace roguelike.Consoles
 {
@@ -15,6 +16,7 @@ namespace roguelike.Consoles
     {
         RogueSharp.FieldOfView rogueFOV;
         public GameObject Player { get; private set; }
+        public List<Monster> Monsters { get; private set; }
         CellAppearance[,] mapData;
 
         RogueSharp.Map rogueMap;
@@ -33,11 +35,21 @@ namespace roguelike.Consoles
         {
             base.Render();
             Player.Render();
+            Monsters.ForEach(m =>
+            {
+                if (textSurface.RenderArea.Contains(m.Position)) { m.Render(); }
+            });
         }
+
         public override void Update()
         {
             base.Update();
             Player.Update();
+            Monsters.ForEach(m =>
+            {
+                m.RenderOffset = Position - textSurface.RenderArea.Location;
+                m.Update();
+            });
         }
 
         public void MovePlayerBy(Point amount)
@@ -81,7 +93,7 @@ namespace roguelike.Consoles
             //RogueSharp.MapCreation.IMapCreationStrategy<RogueSharp.Map> mapCreationStrategy
             //    = new RogueSharp.MapCreation.RandomRoomsMapCreationStrategy<RogueSharp.Map>(Width, Height, 100, 20, 7);
             //rogueMap = RogueSharp.Map.Create(mapCreationStrategy);
-            MapGenerator mapGenerator = new MapGenerator(Width, Height, 20, 15, 8);
+            MapGenerator mapGenerator = new MapGenerator(Width, Height, 50, 20, 8);
 
             // TODO: I don't think I should have two maps
             detailedMap = mapGenerator.CreateMap();
@@ -105,16 +117,15 @@ namespace roguelike.Consoles
                     mapData[cell.X, cell.Y].CopyAppearanceTo(this[cell.X, cell.Y]);
                 }
             }
-
-            PositionPlayer();          
+            
+            PositionPlayer();
+            Monsters = detailedMap.getMonsters(Position - textSurface.RenderArea.Location);
         }
+
 
         private void PositionPlayer()
         {
-            // TODO: centralize variables
-            int xOffSet = 0;
-            int yOffSet = 3;
-            Player.Position = detailedMap.getPlayerStartingPosition(xOffSet, yOffSet);
+            Player.Position = detailedMap.getPlayerStartingPosition();
             
             TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
                                                     Player.Position.Y - (TextSurface.RenderArea.Height / 2),

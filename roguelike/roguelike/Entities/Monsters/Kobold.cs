@@ -7,7 +7,7 @@ namespace roguelike.Entities.Monsters
 {
     public class Kobold : Monster
     {
-        Kobold(int level) : base(Engine.DefaultFont)
+        public Kobold(int level) : base(Engine.DefaultFont)
         {
             int health = Dice.Roll("2D5");
             Attack = Dice.Roll("1D3") + level / 3;

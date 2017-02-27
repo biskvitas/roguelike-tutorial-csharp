@@ -44,9 +44,7 @@ namespace roguelike.Systems
                 int roomXPosition = Game.Random.Next(0, _width - roomWidth - 1);
                 int roomYPosition = Game.Random.Next(0, _height - roomHeight - 1);
 
-                // All of our rooms can be represented as Rectangles
-                var newRoom = new Rectangle(roomXPosition, roomYPosition,
-                  roomWidth, roomHeight);
+                var newRoom = new Rectangle(roomXPosition, roomYPosition, roomWidth, roomHeight);
 
                 // Check to see if the room rectangle intersects with any other rooms
                 bool newRoomIntersects = _map.Rooms.Any(room => newRoom.Intersects(room));
@@ -93,7 +91,6 @@ namespace roguelike.Systems
             return _map;
         }
 
-        // Carve a tunnel out of the map parallel to the x-axis
         private void CreateHorizontalTunnel(int xStart, int xEnd, int yPosition)
         {
             for (int x = Math.Min(xStart, xEnd); x <= Math.Max(xStart, xEnd); x++)
@@ -102,7 +99,6 @@ namespace roguelike.Systems
             }
         }
 
-        // Carve a tunnel out of the map parallel to the y-axis
         private void CreateVerticalTunnel(int yStart, int yEnd, int xPosition)
         {
             for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
@@ -124,36 +120,6 @@ namespace roguelike.Systems
             }
         }
 
-        /*
-    private void PlaceMonsters()
-    {
-        foreach (var room in _map.Rooms)
-        {
-            // Each room has a 60% chance of having monsters
-            if (Dice.Roll("1D10") < 7)
-            {
-                // Generate between 1 and 4 monsters
-                var numberOfMonsters = Dice.Roll("1D4");
-                for (int i = 0; i < numberOfMonsters; i++)
-                {
-                    // Find a random walkable location in the room to place the monster
-                    Point randomRoomLocation = _map.GetRandomWalkableLocationInRoom(room);
-                    // It's possible that the room doesn't have space to place a monster
-                    // In that case skip creating the monster
-                    if (randomRoomLocation != null)
-                    {
-                        // Temporarily hard code this monster to be created at level 1
-                        var monster = Kobold.Create(1);
-                        monster.X = randomRoomLocation.X;
-                        monster.Y = randomRoomLocation.Y;
-                        _map.AddMonster(monster);
-                    }
-                }
-            }
-        }
-
-    }
-    */
         /*
         private void CreateDoors(Rectangle room)
         {
