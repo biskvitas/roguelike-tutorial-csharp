@@ -72,10 +72,7 @@
     <Compile Include="Consoles\MapConsole.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="Consoles\StatConsole.cs" />
-    <Compile Include="Core\Actor.cs" />
-    <Compile Include="Core\Colors.cs" />
     <Compile Include="Core\Player.cs" />
-    <Compile Include="Core\Swatch.cs" />
     <Compile Include="Entities\Monsters\Kobold.cs" />
     <Compile Include="Entities\Monsters\Monster.cs" />
     <Compile Include="Utils\Colors.cs" />
@@ -89,13 +86,11 @@
     <Compile Include="GameWorld.cs" />
     <Compile Include="Interfaces\IActor.cs" />
     <Compile Include="Interfaces\IBehavior.cs" />
-    <Compile Include="Interfaces\IDrawable.cs" />
     <Compile Include="Interfaces\IScheduleable.cs" />
     <Compile Include="Consoles\DungeonScreen.cs" />
     <Compile Include="MapObjects\Floor.cs" />
     <Compile Include="MapObjects\MapObjectBase.cs" />
     <Compile Include="MapObjects\Wall.cs" />
-    <Compile Include="Monsters\Kobold.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Systems\CommandSystem.cs" />
     <Compile Include="Systems\MapGenerator.cs" />

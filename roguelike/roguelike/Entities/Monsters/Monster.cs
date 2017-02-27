@@ -22,6 +22,8 @@ namespace roguelike.Entities.Monsters
         public string Name { get; set; }
         public int Speed { get; set; }     
 
-        public Monster(Font font) : base(font) {}       
+        public Monster(Font font) : base(font) {}
+        
+        // TODO: add code to draw monster only when it is in FoV       
     }
 }

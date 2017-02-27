@@ -1,16 +1,17 @@
 ﻿using roguelike.Interfaces;
 using RLNET;
 using RogueSharp;
+using roguelike.Utils;
 
 namespace roguelike.Core
 {
-	public class Door : IDrawable
+	public class Door
 	{
 		public Door()
 		{
 			Symbol = '+';
-			Color = Colors.Door;
-			BackgroundColor = Colors.DoorBackground;
+   //         Color = Colors.Door;
+			//BackgroundColor = Colors.DoorBackground;
 		}
 		public bool IsOpen { get; set; }
 
@@ -27,13 +28,13 @@ namespace roguelike.Core
 			Symbol = IsOpen ? '-' : '+';
 			if (map.IsInFov(X, Y))
 			{
-				Color = Colors.DoorFov;
-				BackgroundColor = Colors.DoorBackgroundFov;
+				//Color = Colors.DoorFov;
+				//BackgroundColor = Colors.DoorBackgroundFov;
 			}
 			else
 			{
-				Color = Colors.Door;
-				BackgroundColor = Colors.DoorBackground;
+				//Color = Colors.Door;
+				//BackgroundColor = Colors.DoorBackground;
 			}
 
 			console.Set(X, Y, Color, BackgroundColor, Symbol);

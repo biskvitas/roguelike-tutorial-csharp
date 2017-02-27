@@ -5,6 +5,6 @@ namespace roguelike.Interfaces
 {
 	public interface IBehavior
 	{
-		bool Act(Monster monster, CommandSystem commandSystem);
+		//bool Act(Monster monster, CommandSystem commandSystem);
 	}
 }
