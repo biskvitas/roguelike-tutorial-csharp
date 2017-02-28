@@ -10,7 +10,7 @@ namespace roguelike.Systems
     {
         // Return value is true if the player was able to move
         // false when the player couldn't move, such as trying to move into a wall
-        public bool MovePlayer(Direction direction)
+        public bool MovePlayer()
         {
             //int x = Game.Player.X;
             //int y = Game.Player.Y;

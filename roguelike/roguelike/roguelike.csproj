@@ -67,16 +67,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\StandardMoveAndAttack.cs" />
+    <Compile Include="Core\Behaviors\StandardMoveAndAttack.cs" />
     <Compile Include="Consoles\InventoryConsole.cs" />
     <Compile Include="Consoles\MapConsole.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="Consoles\StatConsole.cs" />
-    <Compile Include="Core\Player.cs" />
     <Compile Include="Entities\Monsters\Kobold.cs" />
     <Compile Include="Entities\Monsters\Monster.cs" />
     <Compile Include="Utils\Colors.cs" />
-    <Compile Include="Core\Direction.cs" />
     <Compile Include="Core\Door.cs" />
     <Compile Include="Core\DungeonMap.cs" />
     <Compile Include="Core\Monster.cs" />
@@ -92,35 +90,35 @@
     <Compile Include="MapObjects\MapObjectBase.cs" />
     <Compile Include="MapObjects\Wall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Systems\CommandSystem.cs" />
-    <Compile Include="Systems\MapGenerator.cs" />
-    <Compile Include="Systems\MessageLog.cs" />
-    <Compile Include="Systems\SchedulingSystem.cs" />
+    <Compile Include="Core\Systems\CommandSystem.cs" />
+    <Compile Include="Core\Systems\MapGenerator.cs" />
+    <Compile Include="Core\Systems\MessageLog.cs" />
+    <Compile Include="Core\Systems\SchedulingSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="C64.font">
+    <None Include="Fonts\C64.font">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Cheepicus12.font">
+    <None Include="Fonts\Cheepicus12.font">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="IBM.font">
+    <None Include="Fonts\IBM.font">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
+    <None Include="Fonts\packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Cheepicus_12x12.png">
+    <Content Include="Fonts\Cheepicus_12x12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="IBM8x16.png">
+    <Content Include="Fonts\IBM8x16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="terminal8x8.png">
+    <Content Include="Fonts\terminal8x8.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Yayo_c64.png">
+    <Content Include="Fonts\Yayo_c64.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

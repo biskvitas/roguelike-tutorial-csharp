@@ -73,11 +73,6 @@ namespace roguelike.Consoles
             Add(MessageConsole);
             Add(InventoryConsole);
 
-            // Placeholder stuff for the stats screen
-            StatsConsole.CharacterName = "Hydorn";
-            StatsConsole.MaxHealth = 200;
-            StatsConsole.Health = 100;
-
             SadConsole.Engine.ActiveConsole = this;
         }
 

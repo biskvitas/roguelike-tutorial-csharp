@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using roguelike.Core;
+using roguelike.Entities;
 using roguelike.Systems;
 using RogueSharp.Random;
 using System;
@@ -42,7 +43,7 @@ namespace roguelike
             Components.Add(sadConsoleComponent);
             */
 
-            SadConsole.Engine.Initialize("IBM.font", 150, 50);
+            SadConsole.Engine.Initialize("Fonts/IBM.font", 150, 50);
 
             SadConsole.Engine.EngineStart += EngineStart;
             SadConsole.Engine.EngineUpdated += EngineUpdated;
