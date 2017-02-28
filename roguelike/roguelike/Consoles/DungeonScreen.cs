@@ -16,8 +16,8 @@ namespace roguelike.Consoles
 
         private Console messageHeaderConsole; // ???
 
-        private readonly int dungeonWidth = 200;
-        private readonly int dungeonHeight = 50;
+        private readonly int dungeonWidth = 130;
+        private readonly int dungeonHeight = 44;
 
         // console window sizes
         private static readonly int _screenWidth = 150;

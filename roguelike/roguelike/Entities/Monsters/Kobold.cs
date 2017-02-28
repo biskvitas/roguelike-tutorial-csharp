@@ -20,6 +20,8 @@ namespace roguelike.Entities.Monsters
             MaxHealth = health;
             Name = "Kobold";
             Speed = 14;
+            Symbol = "k";
+            color = Colors.KoboldColor;
 
             // set animation
             AnimatedTextSurface monsterAnimation = new AnimatedTextSurface("default", 1, 1, Engine.DefaultFont);

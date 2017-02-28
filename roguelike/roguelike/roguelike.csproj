@@ -77,7 +77,6 @@
     <Compile Include="Utils\Colors.cs" />
     <Compile Include="Core\Door.cs" />
     <Compile Include="Core\DungeonMap.cs" />
-    <Compile Include="Core\Monster.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Utils\Swatch.cs" />
     <Compile Include="Game.cs" />

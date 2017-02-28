@@ -1,4 +1,5 @@
-﻿using roguelike.Interfaces;
+﻿using Microsoft.Xna.Framework;
+using roguelike.Interfaces;
 using SadConsole;
 using SadConsole.Game;
 using System;
@@ -22,8 +23,22 @@ namespace roguelike.Entities.Monsters
         public string Name { get; set; }
         public int Speed { get; set; }     
 
+        // monster specific properties
+        public string Symbol { get; set; }
+        public Color color { get; set; }
+
         public Monster(Font font) : base(font) {}
-        
+
         // TODO: add code to draw monster only when it is in FoV       
+
+
+        // some old code from original class
+        //public int? TurnsAlerted { get; set; }
+
+        //public virtual void PerformAction(CommandSystem commandSystem)
+        //{
+        //    var behavior = new StandardMoveAndAttack();
+        //    behavior.Act(this, commandSystem);
+        //}
     }
 }

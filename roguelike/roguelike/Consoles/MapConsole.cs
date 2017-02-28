@@ -15,7 +15,7 @@ namespace roguelike.Consoles
     public class MapConsole : SadConsole.Consoles.Console
     {
         RogueSharp.FieldOfView rogueFOV;
-        public GameObject Player { get; private set; }
+        public Player Player { get; private set; }
         public List<Monster> Monsters { get; private set; }
         CellAppearance[,] mapData;
 
@@ -27,12 +27,15 @@ namespace roguelike.Consoles
         public MapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight): base(mapWidth, mapHeight)
         {
             TextSurface.RenderArea = new Rectangle(0, 0, viewWidth, viewHeight);
-            Player = new Entities.Player();           
+            Player = new Player();           
             GenerateMap();
         }
 
+        bool runOnce = true; // TODO: carry on thinking for a proper fix
         public override void Render()
         {
+            if(runOnce) { GameWorld.DungeonScreen.StatsConsole.DrawPlayerStats(Player); runOnce = false; }
+
             base.Render();
             Player.Render();
             Monsters.ForEach(m =>
@@ -58,7 +61,7 @@ namespace roguelike.Consoles
             Point newPosition = Player.Position + amount;
 
             // TODO: might need to add additional check to avoid drawing in inventory
-            if (new Rectangle(0, 6, Width, Height).Contains(newPosition) && rogueMap.IsWalkable(newPosition.X, newPosition.Y))
+            if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && rogueMap.IsWalkable(newPosition.X, newPosition.Y))
             {
                 Player.Position += amount;
                 // TODO: fix this possitioning horror
@@ -93,7 +96,7 @@ namespace roguelike.Consoles
             //RogueSharp.MapCreation.IMapCreationStrategy<RogueSharp.Map> mapCreationStrategy
             //    = new RogueSharp.MapCreation.RandomRoomsMapCreationStrategy<RogueSharp.Map>(Width, Height, 100, 20, 7);
             //rogueMap = RogueSharp.Map.Create(mapCreationStrategy);
-            MapGenerator mapGenerator = new MapGenerator(Width, Height, 50, 20, 8);
+            MapGenerator mapGenerator = new MapGenerator(Width, Height, 50, 12, 6);
 
             // TODO: I don't think I should have two maps
             detailedMap = mapGenerator.CreateMap();
