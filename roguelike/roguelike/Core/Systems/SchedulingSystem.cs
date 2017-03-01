@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using roguelike.Interfaces;
 
-namespace roguelike.Systems
+namespace roguelike.Core.Systems
 {
-	public class SchedulingSystem
+    public class SchedulingSystem
 	{
 		private int _time;
 		private readonly SortedDictionary<int, List<IScheduleable>> _scheduleables;

@@ -1,13 +1,7 @@
-﻿using SadConsole;
-using Microsoft.Xna.Framework;
-using SadConsole.Game;
-using SadConsole.Consoles;
-using System;
+﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using roguelike.Entities;
-using RogueSharp.DiceNotation;
 using roguelike.Core;
-using roguelike.Systems;
 using roguelike.Entities.Monsters;
 using System.Linq;
 using roguelike.Core.Systems;
@@ -74,31 +68,34 @@ namespace roguelike.Consoles
             if(Monsters.ContainsKey(newPosition))
             {
                 combatSystem.Attack(Player, Monsters[newPosition]);
-                return;
+            }
+            else
+            {
+                //TODO : add door opening here
+
+
+                Player.Position += amount;
+                // TODO: fix this possitioning horror
+                TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                        Player.Position.Y - (TextSurface.RenderArea.Height / 2),
+                                                        TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
+
+                // If he view area moved, we'll keep our entity in sync with it.
+                Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+
+                // Update FoV
+                foreach (var cell in previousFOV)
+                {
+                    mapData[cell.X, cell.Y].RemoveCellFromView(this[cell.X, cell.Y]);
+                }
+                previousFOV = rogueFOV.ComputeFov(Player.Position.X, Player.Position.Y, 10, true);
+                foreach (var cell in previousFOV)
+                {
+                    rogueMap.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
+                    mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], true, rogueMap.GetCell(cell.X, cell.Y).IsExplored);
+                }
             }
 
-            Player.Position += amount;
-            // TODO: fix this possitioning horror
-            TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                    Player.Position.Y - (TextSurface.RenderArea.Height / 2),
-                                                    TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
-
-            // If he view area moved, we'll keep our entity in sync with it.
-            Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-
-
-            // Update FoV
-            foreach (var cell in previousFOV)
-            {
-                mapData[cell.X, cell.Y].RemoveCellFromView(this[cell.X, cell.Y]);
-            }    
-            previousFOV = rogueFOV.ComputeFov(Player.Position.X, Player.Position.Y, 10, true);
-            foreach (var cell in previousFOV)
-            {
-                rogueMap.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
-                mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], true, rogueMap.GetCell(cell.X, cell.Y).IsExplored);
-            }
-        
             GameWorld.DungeonScreen.StatsConsole.Clear();
             GameWorld.DungeonScreen.StatsConsole.DrawPlayerStats(Player);
             int idx = 0;

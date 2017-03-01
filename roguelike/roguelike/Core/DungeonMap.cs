@@ -1,7 +1,6 @@
 ﻿using roguelike.Entities.Monsters;
 using RogueSharp;
 using RogueSharp.DiceNotation;
-using SadConsole.Game;
 using System.Collections.Generic;
 using Point = Microsoft.Xna.Framework.Point;
 
@@ -109,28 +108,6 @@ namespace roguelike.Core
             }
         }
 
-        // Returns true when able to place the Actor on the cell or false otherwise
-        public bool SetActorPosition(Actor actor, int x, int y)
-        {
-	        if (!GetCell(x, y).IsWalkable) return false;
-
-	        // The cell the actor was previously on is now walkable
-	        SetIsWalkable(actor.X, actor.Y, true);
-	        // Update the actor's position
-	        actor.X = x;
-	        actor.Y = y;
-	        // The new cell the actor is on is now not walkable
-	        SetIsWalkable(actor.X, actor.Y, false);
-	        // Try to open a door if one exists here
-	        OpenDoor(actor, x, y);
-
-	        if (actor is Player)
-	        {
-		        UpdatePlayerFieldOfView();
-	        }
-
-	        return true;
-        }
          */
 
         // A helper method for setting the IsWalkable property on a Cell

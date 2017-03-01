@@ -3,7 +3,7 @@ using RogueSharp;
 using System;
 using System.Linq;
 
-namespace roguelike.Systems
+namespace roguelike.Core.Systems
 {
     public class MapGenerator
     {
