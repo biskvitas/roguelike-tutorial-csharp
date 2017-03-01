@@ -3,6 +3,7 @@ using RogueSharp;
 using RogueSharp.DiceNotation;
 using SadConsole.Game;
 using System.Collections.Generic;
+using Point = Microsoft.Xna.Framework.Point;
 
 
 namespace roguelike.Core
@@ -22,42 +23,75 @@ namespace roguelike.Core
 			//Doors = new List<Door>();
 		}
 
-        public Microsoft.Xna.Framework.Point getPlayerStartingPosition()
+        public Point getPlayerStartingPosition()
         {
-            return new Microsoft.Xna.Framework.Point(Rooms[0].Center.X, Rooms[0].Center.Y);
+            return new Point(Rooms[0].Center.X, Rooms[0].Center.Y);
         }
 
-        public List<Monster> getMonsters(Microsoft.Xna.Framework.Point renderOffset)
+        public Dictionary<Point, Monster> getMonsters(Microsoft.Xna.Framework.Point renderOffset)
         {
-            List<Monster> monsters = new List<Monster>();
+            Dictionary<Point, Monster> monsters = new Dictionary<Point, Monster>();
             foreach (var room in Rooms)
             {
                 // Each room has a 60% chance of having monsters
-                if (Dice.Roll("1D10") < 7)
+                if (Dice.Roll("1D10") < 11)
                 {
                     // Generate between 1 and 4 monsters
                     var numberOfMonsters = Dice.Roll("1D4");
                     for (int i = 0; i < numberOfMonsters; i++)
                     {
                         // Find a random walkable location in the room to place the monster
-                        Point randomRoomLocation = GetRandomWalkableLocationInRoom(room);
+                        Point? randomRoomLocation = GetRandomWalkableLocationInRoom(room);
                         // It's possible that the room doesn't have space to place a monster
                         // In that case skip creating the monster
-                        if (randomRoomLocation != null)
+                        if (randomRoomLocation != null && !monsters.ContainsKey((Point)randomRoomLocation))
                         {
                             // Temporarily hard code this monster to be created at level 1
                             Monster monster = new Kobold(1);
-                            
-                            monster.Position = new Microsoft.Xna.Framework.Point(randomRoomLocation.X, randomRoomLocation.Y);
-                            //monster.AbsoluteArea = new Microsoft.Xna.Framework.Rectangle(monster.Position, new Microsoft.Xna.Framework.Point(1, 1));                    
+                            monster.Position = (Point)randomRoomLocation;                 
                             monster.RenderOffset = renderOffset;
-                            monsters.Add(monster);
+                            monsters.Add(monster.Position, monster);
                         }
                     }
                 }
             }
             return monsters;
         }
+
+        // Look for a random location in the room that is walkable.
+        public Point? GetRandomWalkableLocationInRoom(Rectangle room)
+        {
+            if (!DoesRoomHaveWalkableSpace(room)) return null;
+            for (int i = 0; i < 100; i++)
+            {
+                int x = Game.Random.Next(1, room.Width - 2) + room.X;
+                int y = Game.Random.Next(1, room.Height - 2) + room.Y;
+                if (IsWalkable(x, y))
+                {
+                    return new Point(x, y);
+                }
+            }
+
+            // If we didn't find a walkable location in the room return null
+            return null;
+        }
+
+        // Iterate through each Cell in the room and return true if any are walkable
+        public bool DoesRoomHaveWalkableSpace(Rectangle room)
+        {
+            for (int x = 1; x <= room.Width - 2; x++)
+            {
+                for (int y = 1; y <= room.Height - 2; y++)
+                {
+                    if (IsWalkable(x + room.X, y + room.Y))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         /*       
 
         // This method will be called any time we move the player to update field-of-view
@@ -125,43 +159,9 @@ namespace roguelike.Core
             SetIsWalkable(monster.X, monster.Y, false);
 			Game.SchedulingSystem.Add(monster);
 		}
-        */
+       
 
-        // Look for a random location in the room that is walkable.
-        public Point GetRandomWalkableLocationInRoom(Rectangle room)
-        {
-	        if (!DoesRoomHaveWalkableSpace(room)) return null;
-	        for (int i = 0; i < 100; i++)
-	        {
-		        int x = Game.Random.Next(1, room.Width - 2) + room.X;
-		        int y = Game.Random.Next(1, room.Height - 2) + room.Y;
-		        if (IsWalkable(x, y))
-		        {
-			        return new RogueSharp.Point(x, y);
-		        }
-	        }
 
-	        // If we didn't find a walkable location in the room return null
-            return null;
-        }
-
-        // Iterate through each Cell in the room and return true if any are walkable
-        public bool DoesRoomHaveWalkableSpace(Rectangle room)
-        {
-            for (int x = 1; x <= room.Width - 2; x++)
-            {
-                for (int y = 1; y <= room.Height - 2; y++)
-                {
-                    if (IsWalkable(x + room.X, y + room.Y))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /*
 		public void RemoveMonster(Monster monster)
 		{
 			_monsters.Remove(monster);

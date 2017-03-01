@@ -9,6 +9,7 @@ using RogueSharp.DiceNotation;
 using roguelike.Core;
 using roguelike.Systems;
 using roguelike.Entities.Monsters;
+using System.Linq;
 
 namespace roguelike.Consoles
 {
@@ -17,7 +18,8 @@ namespace roguelike.Consoles
         RogueSharp.FieldOfView rogueFOV;
         MapObjects.MapObjectBase[,] mapData;
         public Player Player { get; private set; }
-        public List<Monster> Monsters { get; private set; }
+        //public List<Monster> Monsters { get; private set; }
+        public Dictionary<Point, Monster> Monsters { get; private set; }
 
         RogueSharp.Map rogueMap;
         private DungeonMap detailedMap;
@@ -34,14 +36,19 @@ namespace roguelike.Consoles
         bool runOnce = true; // TODO: carry on thinking for a proper fix
         public override void Render()
         {
-            if(runOnce) { GameWorld.DungeonScreen.StatsConsole.DrawPlayerStats(Player); runOnce = false; }
+            if(runOnce) {
+                MovePlayerBy(new Point(0, 0));
+                GameWorld.DungeonScreen.StatsConsole.DrawPlayerStats(Player);
+                runOnce = false;
+            }
 
             base.Render();
             Player.Render();
-            Monsters.ForEach(m =>
+            
+            Monsters.ToList().ForEach(m =>
             {
-                if (!m.InFoV) return;
-                if (textSurface.RenderArea.Contains(m.Position)) { m.Render(); }
+                if (!m.Value.InFoV) return;
+                if (textSurface.RenderArea.Contains(m.Value.Position)) { m.Value.Render(); }
             });
         }
 
@@ -49,21 +56,22 @@ namespace roguelike.Consoles
         {
             base.Update();
             Player.Update();
-            Monsters.ForEach(m =>
+            Monsters.ToList().ForEach(m =>
             {
-                m.RenderOffset = Position - textSurface.RenderArea.Location;
-                m.Update();
+                m.Value.RenderOffset = Position - textSurface.RenderArea.Location;
+                m.Value.Update();
             });
         }
 
         public void MovePlayerBy(Point amount)
         {
-            // Get the position the player will be at
             Point newPosition = Player.Position + amount;
 
-            // TODO: might need to add additional check to avoid drawing in inventory
-            if (!new Rectangle(0, 0, Width, Height).Contains(newPosition) || !rogueMap.IsWalkable(newPosition.X, newPosition.Y))
+            if (!new Rectangle(0, 0, Width, Height).Contains(newPosition) || !rogueMap.IsWalkable(newPosition.X, newPosition.Y)) return;
+
+            if(Monsters.ContainsKey(newPosition))
             {
+                // TOOD: insert attack here
                 return;
             }
 
@@ -77,32 +85,30 @@ namespace roguelike.Consoles
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
 
 
-            // Erase status on old FOV
+            // Update FoV
             foreach (var cell in previousFOV)
+            {
                 mapData[cell.X, cell.Y].RemoveCellFromView(this[cell.X, cell.Y]);
-            // Calculate the new FOV
+            }    
             previousFOV = rogueFOV.ComputeFov(Player.Position.X, Player.Position.Y, 10, true);
-            // Set status on new FOV
             foreach (var cell in previousFOV)
             {
                 rogueMap.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
                 mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], true, rogueMap.GetCell(cell.X, cell.Y).IsExplored);
             }
         
-            // TODO: compare this with original code for some improvements
-            if (Monsters == null) return;
             GameWorld.DungeonScreen.StatsConsole.Clear();
             GameWorld.DungeonScreen.StatsConsole.DrawPlayerStats(Player);
             int idx = 0;
-            foreach (Monster monster in Monsters)
+            foreach (KeyValuePair<Point, Monster> monster in Monsters)
             {
-                if (rogueFOV.IsInFov(monster.Position.X, monster.Position.Y))
+                if (rogueFOV.IsInFov(monster.Value.Position.X, monster.Value.Position.Y))
                 {
-                    monster.InFoV = true;
-                    GameWorld.DungeonScreen.StatsConsole.DrawMonsterStats(monster, idx);
+                    monster.Value.InFoV = true;
+                    GameWorld.DungeonScreen.StatsConsole.DrawMonsterStats(monster.Value, idx);
                     idx++;
                 } else {
-                    monster.InFoV = false;
+                    monster.Value.InFoV = false;
                 }                  
             }
         }
@@ -140,9 +146,10 @@ namespace roguelike.Consoles
                     rogueMap.SetCellProperties(cell.X, cell.Y, false, cell.IsWalkable);
                 }
             }
+
             
-            PositionPlayer();
             Monsters = detailedMap.getMonsters(Position - textSurface.RenderArea.Location);
+            PositionPlayer();
         }
 
 
@@ -155,7 +162,6 @@ namespace roguelike.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
-            MovePlayerBy(new Point(0, 0));
         }
     }
 }
