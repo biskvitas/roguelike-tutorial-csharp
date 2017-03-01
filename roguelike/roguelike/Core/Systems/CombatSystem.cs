@@ -1,57 +1,33 @@
 ﻿using System.Text;
-using roguelike.Core;
-using roguelike.Interfaces;
-using RogueSharp;
 using RogueSharp.DiceNotation;
+using roguelike.Entities;
+using roguelike.Entities.Monsters;
 
-namespace roguelike.Systems
+namespace roguelike.Core.Systems
 {
-    public class CommandSystem
+    public class CombatSystem
     {
-        // Return value is true if the player was able to move
-        // false when the player couldn't move, such as trying to move into a wall
-        public bool MovePlayer()
-        {
-
-
-            /* note: tmp comment out 
-	        if (Game.DungeonMap.SetActorPosition(Game.Player, x, y)) return true;
-
-			Monster monster = Game.DungeonMap.GetMonsterAt(x, y);
-
-			if (monster != null)
-			{
-				Attack(Game.Player, monster);
-				return true;
-			}
-            */
-
-			return false;
-        }
-
-        /*
-		public void Attack(Actor attacker, Actor defender)
+        
+		public void Attack(Entity attacker, Entity defender)
 		{
 			StringBuilder attackMessage = new StringBuilder();
 			StringBuilder defenseMessage = new StringBuilder();
 
 			int hits = ResolveAttack(attacker, defender, attackMessage);
-
 			int blocks = ResolveDefense(defender, hits, attackMessage, defenseMessage);
 
-			Game.MessageLog.Add(attackMessage.ToString());
+            GameWorld.DungeonScreen.MessageConsole.PrintMessage(attackMessage.ToString());
 			if (!string.IsNullOrWhiteSpace(defenseMessage.ToString()))
 			{
-				Game.MessageLog.Add(defenseMessage.ToString());
+                GameWorld.DungeonScreen.MessageConsole.PrintMessage(defenseMessage.ToString());
 			}
 
 			int damage = hits - blocks;
-
 			ResolveDamage(defender, damage);
 		}
 
 		// The attacker rolls based on his stats to see if he gets any hits
-		private static int ResolveAttack(Actor attacker, Actor defender, StringBuilder attackMessage)
+		private static int ResolveAttack(Entity attacker, Entity defender, StringBuilder attackMessage)
 		{
 			int hits = 0;
 
@@ -76,7 +52,7 @@ namespace roguelike.Systems
 		}
 
 		// The defender rolls based on his stats to see if he blocks any of the hits from the attacker
-		private static int ResolveDefense(Actor defender, int hits, StringBuilder attackMessage, StringBuilder defenseMessage)
+		private static int ResolveDefense(Entity defender, int hits, StringBuilder attackMessage, StringBuilder defenseMessage)
 		{
 			int blocks = 0;
 
@@ -110,13 +86,12 @@ namespace roguelike.Systems
 		}
 
 		// Apply any damage that wasn't blocked to the defender
-		private static void ResolveDamage(Actor defender, int damage)
+		private static void ResolveDamage(Entity defender, int damage)
 		{
 			if (damage > 0)
 			{
 				defender.Health = defender.Health - damage;
-
-				Game.MessageLog.Add($"  {defender.Name} was hit for {damage} damage");
+                GameWorld.DungeonScreen.MessageConsole.PrintMessage($"  {defender.Name} was hit for {damage} damage");
 
 				if (defender.Health <= 0)
 				{
@@ -125,24 +100,24 @@ namespace roguelike.Systems
 			}
 			else
 			{
-				Game.MessageLog.Add($"  {defender.Name} blocked all damage");
+                GameWorld.DungeonScreen.MessageConsole.PrintMessage($"  {defender.Name} blocked all damage");
 			}
 		}
 
 		// Remove the defender from the map and add some messages upon death.
-		private static void ResolveDeath(Actor defender)
+		private static void ResolveDeath(Entity defender)
 		{
 			if (defender is Player)
 			{
-				Game.MessageLog.Add($"  {defender.Name} was killed, GAME OVER MAN!");
+                GameWorld.DungeonScreen.MessageConsole.PrintMessage($"  {defender.Name} was killed, GAME OVER MAN!");
 			}
 			else if (defender is Monster)
 			{
-				//Game.DungeonMap.RemoveMonster((Monster)defender);
-
-				Game.MessageLog.Add($"  {defender.Name} died and dropped {defender.Gold} gold");
+				GameWorld.DungeonScreen.MapConsole.RemoveMonster((Monster)defender);
+                GameWorld.DungeonScreen.MessageConsole.PrintMessage($"  {defender.Name} died and dropped {defender.Gold} gold");
 			}
 		}
+        /*
 		public bool IsPlayerTurn { get; set; }
 
 		public void EndPlayerTurn()

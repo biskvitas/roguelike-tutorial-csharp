@@ -1,6 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using roguelike.Core;
+﻿using roguelike.Core;
+using roguelike.Core.Systems;
 using roguelike.Entities;
 using roguelike.Systems;
 using RogueSharp.Random;
@@ -14,7 +13,6 @@ namespace roguelike
         private static bool _renderRequired = true;
 
         public static MessageLog MessageLog { get; private set; }
-        public static CommandSystem CommandSystem { get; private set; }
         public static DungeonMap DungeonMap { get; private set; }
         public static Player Player { get; set; }
         // Singleton of IRandom used throughout the game when generating random numbers

@@ -72,6 +72,7 @@
     <Compile Include="Consoles\MapConsole.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="Consoles\StatConsole.cs" />
+    <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Monsters\Kobold.cs" />
     <Compile Include="Entities\Monsters\Monster.cs" />
     <Compile Include="Utils\Colors.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="MapObjects\MapObjectBase.cs" />
     <Compile Include="MapObjects\Wall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Systems\CommandSystem.cs" />
+    <Compile Include="Core\Systems\CombatSystem.cs" />
     <Compile Include="Core\Systems\MapGenerator.cs" />
     <Compile Include="Core\Systems\MessageLog.cs" />
     <Compile Include="Core\Systems\SchedulingSystem.cs" />

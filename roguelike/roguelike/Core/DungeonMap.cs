@@ -93,7 +93,6 @@ namespace roguelike.Core
         }
 
         /*       
-
         // This method will be called any time we move the player to update field-of-view
         public void UpdatePlayerFieldOfView()
         {
@@ -109,7 +108,6 @@ namespace roguelike.Core
                 }
             }
         }
-        
 
         // Returns true when able to place the Actor on the cell or false otherwise
         public bool SetActorPosition(Actor actor, int x, int y)
@@ -146,23 +144,15 @@ namespace roguelike.Core
         // Called by MapGenerator after we generate a new map to add the player to the map
         public void AddPlayer(Player player)
         {
-            Game.Player = player;
-            SetIsWalkable(player.X, player.Y, false);
-            UpdatePlayerFieldOfView();
 			Game.SchedulingSystem.Add(player);
 		}
         
         public void AddMonster(Monster monster)
         {
-            _monsters.Add(monster);
-            // After adding the monster to the map make sure to make the cell not walkable
-            SetIsWalkable(monster.X, monster.Y, false);
 			Game.SchedulingSystem.Add(monster);
 		}
-       
 
-
-		public void RemoveMonster(Monster monster)
+        public void RemoveMonster(Monster monster)
 		{
 			_monsters.Remove(monster);
 			// After removing the monster from the map, make sure the cell is walkable again

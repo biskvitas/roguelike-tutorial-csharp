@@ -10,15 +10,17 @@ using roguelike.Core;
 using roguelike.Systems;
 using roguelike.Entities.Monsters;
 using System.Linq;
+using roguelike.Core.Systems;
 
 namespace roguelike.Consoles
 {
     public class MapConsole : SadConsole.Consoles.Console
     {
+        private readonly CombatSystem combatSystem = new CombatSystem();
+
         RogueSharp.FieldOfView rogueFOV;
         MapObjects.MapObjectBase[,] mapData;
         public Player Player { get; private set; }
-        //public List<Monster> Monsters { get; private set; }
         public Dictionary<Point, Monster> Monsters { get; private set; }
 
         RogueSharp.Map rogueMap;
@@ -71,7 +73,7 @@ namespace roguelike.Consoles
 
             if(Monsters.ContainsKey(newPosition))
             {
-                // TOOD: insert attack here
+                combatSystem.Attack(Player, Monsters[newPosition]);
                 return;
             }
 
@@ -162,6 +164,17 @@ namespace roguelike.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+        }
+
+        public void RemoveMonster(Monster killed)
+        {
+            foreach(KeyValuePair<Point, Monster> monster in Monsters)
+            {
+                if(monster.Value.Equals(killed)) {
+                    Monsters.Remove(monster.Key);
+                    return;
+                }
+            }
         }
     }
 }
