@@ -40,6 +40,7 @@ namespace roguelike.Consoles
             Player.Render();
             Monsters.ForEach(m =>
             {
+                if (!m.InFoV) return;
                 if (textSurface.RenderArea.Contains(m.Position)) { m.Render(); }
             });
         }
@@ -95,9 +96,14 @@ namespace roguelike.Consoles
             int idx = 0;
             foreach (Monster monster in Monsters)
             {
-                if (!rogueFOV.IsInFov(monster.Position.X, monster.Position.Y)) continue;                   
-                GameWorld.DungeonScreen.StatsConsole.DrawMonsterStats(monster, idx);
-                idx++;
+                if (rogueFOV.IsInFov(monster.Position.X, monster.Position.Y))
+                {
+                    monster.InFoV = true;
+                    GameWorld.DungeonScreen.StatsConsole.DrawMonsterStats(monster, idx);
+                    idx++;
+                } else {
+                    monster.InFoV = false;
+                }                  
             }
         }
 

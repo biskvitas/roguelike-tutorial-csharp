@@ -26,6 +26,7 @@ namespace roguelike.Entities.Monsters
         // monster specific properties
         public string Symbol { get; set; }
         public Color color { get; set; }
+        public bool InFoV { get; set; }
 
         public Monster(Font font) : base(font) {}
 
