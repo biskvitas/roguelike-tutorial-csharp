@@ -11,14 +11,14 @@ namespace roguelike.Core
     public class DungeonMap : Map
     {
         public List<Rectangle> Rooms;
-        private readonly List<Monster> _monsters;
+        private readonly List<Monster> Monsters;
 		public List<Door> Doors { get; set; }
 
 		public DungeonMap()
         {
             // Initialize the list of rooms when we create a new DungeonMap
             Rooms = new List<Rectangle>();
-            _monsters = new List<Monster>();
+            Monsters = new List<Monster>();
 			//Doors = new List<Door>();
 		}
 
@@ -58,30 +58,7 @@ namespace roguelike.Core
             }
             return monsters;
         }
-        /*
-        // The Draw method will be called each time the map is updated
-        // It will render all of the symbols/colors for each cell to the map sub console
-        public void Draw(RLConsole mapConsole, RLConsole statConsole)
-        {
-            mapConsole.Clear();
-            foreach (Cell cell in GetAllCells())
-            {
-                SetConsoleSymbolForCell(mapConsole, cell);
-            }
-
-            int i = 0;
-            foreach (Monster monster in _monsters)
-            {
-	            if (!IsInFov(monster.X, monster.Y)) continue;
-
-				monster.Draw(mapConsole, this);
-	            monster.DrawStats(statConsole, i);
-	            i++;
-            }
-			_monsters.ForEach(m => m.Draw(mapConsole,this));
-			Doors.ForEach(d => d.Draw(mapConsole, this));
-        }     
-       
+        /*       
 
         // This method will be called any time we move the player to update field-of-view
         public void UpdatePlayerFieldOfView()

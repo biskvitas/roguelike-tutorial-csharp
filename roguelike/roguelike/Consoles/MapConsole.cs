@@ -61,33 +61,45 @@ namespace roguelike.Consoles
             Point newPosition = Player.Position + amount;
 
             // TODO: might need to add additional check to avoid drawing in inventory
-            if (new Rectangle(0, 0, Width, Height).Contains(newPosition) && rogueMap.IsWalkable(newPosition.X, newPosition.Y))
+            if (!new Rectangle(0, 0, Width, Height).Contains(newPosition) || !rogueMap.IsWalkable(newPosition.X, newPosition.Y))
             {
-                Player.Position += amount;
-                // TODO: fix this possitioning horror
-                TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
-                                                        Player.Position.Y - (TextSurface.RenderArea.Height / 2),
-                                                        TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
+                return;
+            }
 
-                // If he view area moved, we'll keep our entity in sync with it.
-                Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+            Player.Position += amount;
+            // TODO: fix this possitioning horror
+            TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
+                                                    Player.Position.Y - (TextSurface.RenderArea.Height / 2),
+                                                    TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
+
+            // If he view area moved, we'll keep our entity in sync with it.
+            Player.RenderOffset = Position - TextSurface.RenderArea.Location;
 
 
-                // Erase status on old FOV
-                foreach (var cell in previousFOV)
-                    mapData[cell.X, cell.Y].RemoveCellFromView(this[cell.X, cell.Y]);
-                // Calculate the new FOV
-                previousFOV = rogueFOV.ComputeFov(Player.Position.X, Player.Position.Y, 10, true);
-                // Set status on new FOV
-                foreach (var cell in previousFOV)
-                {
-                    rogueMap.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
-                    mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], true, rogueMap.GetCell(cell.X, cell.Y).IsExplored);
-                }
+            // Erase status on old FOV
+            foreach (var cell in previousFOV)
+                mapData[cell.X, cell.Y].RemoveCellFromView(this[cell.X, cell.Y]);
+            // Calculate the new FOV
+            previousFOV = rogueFOV.ComputeFov(Player.Position.X, Player.Position.Y, 10, true);
+            // Set status on new FOV
+            foreach (var cell in previousFOV)
+            {
+                rogueMap.SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
+                mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], true, rogueMap.GetCell(cell.X, cell.Y).IsExplored);
+            }
+        
+            // TODO: compare this with original code for some improvements
+            if (Monsters == null) return;
+            GameWorld.DungeonScreen.StatsConsole.Clear();
+            GameWorld.DungeonScreen.StatsConsole.DrawPlayerStats(Player);
+            int idx = 0;
+            foreach (Monster monster in Monsters)
+            {
+                if (!rogueFOV.IsInFov(monster.Position.X, monster.Position.Y)) continue;                   
+                GameWorld.DungeonScreen.StatsConsole.DrawMonsterStats(monster, idx);
+                idx++;
             }
         }
-
-
 
         private void GenerateMap()
         {
