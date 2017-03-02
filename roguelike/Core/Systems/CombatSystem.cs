@@ -6,8 +6,7 @@ using roguelike.Entities.Monsters;
 namespace roguelike.Core.Systems
 {
     public class CombatSystem
-    {
-        
+    {   
 		public void Attack(Entity attacker, Entity defender)
 		{
 			StringBuilder attackMessage = new StringBuilder();

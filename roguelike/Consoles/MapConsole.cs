@@ -7,13 +7,14 @@ using roguelike.Core.Systems;
 using RogueSharp;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
+using roguelike.MapObjects;
 
 namespace roguelike.Consoles
 {
     public class MapConsole : SadConsole.Consoles.Console
     {
         FieldOfView rogueFOV;
-        MapObjects.MapObjectBase[,] mapData;
+        MapObjectBase[,] mapData;
         public Player Player { get; private set; }
         public Dictionary<Point, Monster> Monsters { get; private set; }
 
@@ -71,9 +72,9 @@ namespace roguelike.Consoles
             }
             else
             {
-                //TODO : add door opening here
-
                 Player.Position += amount;
+                detailedMap.OpenDoor(Player, Player.Position.X, Player.Position.Y, ref mapData);
+                
                 // TODO: fix this possitioning horror
                 TextSurface.RenderArea = new Rectangle(Player.Position.X - (TextSurface.RenderArea.Width / 2),
                                                         Player.Position.Y - (TextSurface.RenderArea.Height / 2),
@@ -147,12 +148,19 @@ namespace roguelike.Consoles
             {
                 if (cell.IsWalkable)
                 {
-                    mapData[cell.X, cell.Y] = new MapObjects.Floor();
+                    if (detailedMap.GetDoor(cell.X,cell.Y) == null)
+                    {
+                        mapData[cell.X, cell.Y] = new Floor();
+                    }
+                    else
+                    {
+                        mapData[cell.X, cell.Y] = new Door('+');
+                    }                
                     mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], false, false);
                 }
                 else
-                {
-                    rogueMap.SetCellProperties(cell.X, cell.Y, false, false);
+                { 
+                    //rogueMap.SetCellProperties(cell.X, cell.Y, false, false);
                     mapData[cell.X, cell.Y] = new MapObjects.Wall();
                     mapData[cell.X, cell.Y].RenderToCell(this[cell.X, cell.Y], false, false);
 

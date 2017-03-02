@@ -1,11 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using roguelike.Utils;
 using SadConsole;
 
 namespace roguelike.MapObjects
 {
-    public class Floor : MapObjectBase 
-    {
-        public Floor() : base(Color.DarkGray, Color.Transparent, 46) {}
+    public class Door : MapObjectBase
+	{      
+		public Door(int character): base(Colors.Door, Colors.DoorBackground, character) {}
+
+        public bool IsOpen { get; set; }
+		public char Symbol { get; set; }
 
         public override void RenderToCell(Cell sadConsoleCell, bool isFov, bool isExplored)
         {
@@ -13,7 +16,7 @@ namespace roguelike.MapObjects
 
             if (isFov)
             {
-                sadConsoleCell.GlyphIndex = 46;
+                sadConsoleCell.GlyphIndex = IsOpen ? 45 : 43;
             }
         }
 
@@ -21,6 +24,6 @@ namespace roguelike.MapObjects
         {
             base.RemoveCellFromView(sadConsoleCell);
             sadConsoleCell.GlyphIndex = 0;
-        }
-    }
+        }        
+	}
 }

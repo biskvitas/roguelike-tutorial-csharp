@@ -9,6 +9,8 @@ namespace roguelike.MapObjects
         public CellAppearance Appearance { get; set; }
         public ICellEffect EffectSeen { get; set; }
         public ICellEffect EffectHidden { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
 
         public MapObjectBase(Color foreground, Color background, int character)
         {

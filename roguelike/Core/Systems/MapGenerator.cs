@@ -1,5 +1,7 @@
-﻿using RogueSharp;
+﻿using roguelike.MapObjects;
+using RogueSharp;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace roguelike.Core.Systems
@@ -14,10 +16,7 @@ namespace roguelike.Core.Systems
 
         private readonly DungeonMap _map;
 
-        // Constructing a new MapGenerator requires the dimensions of the maps it will create
-        // as well as the sizes and maximum number of rooms
-        public MapGenerator(int width, int height,
-        int maxRooms, int roomMaxSize, int roomMinSize)
+        public MapGenerator(int width, int height, int maxRooms, int roomMaxSize, int roomMinSize)
         {
             _width = width;
             _height = height;
@@ -78,14 +77,11 @@ namespace roguelike.Core.Systems
                 }
             }
 
-            // Iterate through each room that we wanted placed 
-            // call CreateRoom to make it
             foreach (Rectangle room in _map.Rooms)
             {
                 CreateRoom(room);
-				//CreateDoors(room); // TODO: later
+				CreateDoors(room);
 			}
-            //PlaceMonsters(); TODO : should be separate public method that returns list of monster entities
 
             return _map;
         }
@@ -106,8 +102,6 @@ namespace roguelike.Core.Systems
             }
         }
 
-        // Given a rectangular area on the map
-        // set the cell properties for that area to true
         private void CreateRoom(Rectangle room)
         {
             for (int x = room.Left + 1; x < room.Right; x++)
@@ -119,7 +113,6 @@ namespace roguelike.Core.Systems
             }
         }
 
-        /*
         private void CreateDoors(Rectangle room)
         {
             // The the boundries of the room
@@ -142,7 +135,7 @@ namespace roguelike.Core.Systems
                 {
                     // A door must block field-of-view when it is closed.
                     _map.SetCellProperties(cell.X, cell.Y, false, true);
-                    _map.Doors.Add(new Door
+                    _map.Doors.Add(new Door('+')
                     {
                         X = cell.X,
                         Y = cell.Y,
@@ -150,9 +143,7 @@ namespace roguelike.Core.Systems
                     });
                 }
             }
-
         }
-
 
         // Checks to see if a cell is a good candidate for placement of a door
         private bool IsPotentialDoor(Cell cell)
@@ -193,6 +184,5 @@ namespace roguelike.Core.Systems
             }
             return false;
         }
-        */
     }
 }

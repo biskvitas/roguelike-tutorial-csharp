@@ -1,7 +1,10 @@
-﻿using roguelike.Entities.Monsters;
+﻿using roguelike.Entities;
+using roguelike.Entities.Monsters;
+using roguelike.MapObjects;
 using RogueSharp;
 using RogueSharp.DiceNotation;
 using System.Collections.Generic;
+using System.Linq;
 using Point = Microsoft.Xna.Framework.Point;
 
 
@@ -19,7 +22,7 @@ namespace roguelike.Core
             // Initialize the list of rooms when we create a new DungeonMap
             Rooms = new List<Rectangle>();
             Monsters = new List<Monster>();
-			//Doors = new List<Door>();
+			Doors = new List<Door>();
 		}
 
         public Point getPlayerStartingPosition()
@@ -99,30 +102,25 @@ namespace roguelike.Core
             SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
         }
 
-        /*
-		public Monster GetMonsterAt(int x, int y)
-		{
-			return _monsters.FirstOrDefault(m => m.X == x && m.Y == y);
-		}
-
+        
 		public Door GetDoor(int x, int y)
 		{
 			return Doors.SingleOrDefault(d => d.X == x && d.Y == y);
 		}
 		
-		private void OpenDoor(Actor actor, int x, int y)
+		public void OpenDoor(Player actor, int x, int y, ref MapObjectBase[,] map)
 		{
 			Door door = GetDoor(x, y);
-			if (door != null && !door.IsOpen)
-			{
-				door.IsOpen = true;
-				var cell = GetCell(x, y);
-				// Once the door is opened it should be marked as transparent and no longer block field-of-view
-				SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
-
-				Game.MessageLog.Add($"{actor.Name} opened a door");
+            if (door != null && !door.IsOpen)
+            {
+                door.IsOpen = true;
+                var cell = GetCell(x, y);
+                // Once the door is opened it should be marked as transparent and no longer block field-of-view
+                SetCellProperties(x, y, true, cell.IsWalkable, cell.IsExplored);
+                map[x, y] = new Door('-') { IsOpen = true } ;
+				GameWorld.DungeonScreen.MessageConsole.PrintMessage($"{actor.Name} opened a door");
 			}
 		}
-        */
+        
 	}
 }
