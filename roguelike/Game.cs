@@ -17,7 +17,7 @@ namespace roguelike
             int seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
              
-            SadConsole.Engine.Initialize("Fonts/IBM.font", 150, 50);
+            SadConsole.Engine.Initialize("IBM.font", 150, 50);
             SadConsole.Engine.EngineStart += EngineStart;
             SadConsole.Engine.EngineUpdated += EngineUpdated;
 

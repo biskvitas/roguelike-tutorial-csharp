@@ -50,3 +50,10 @@ Temporary Items
 /packages
 /roguelike/obj/Debug
 **/*.suo
+roguelike/Cheepicus_12x12.png
+roguelike/C64.font
+roguelike/Cheepicus12.font
+roguelike/IBM.font
+roguelike/IBM8x16.png
+roguelike/Yayo_c64.png
+roguelike/terminal8x8.png
