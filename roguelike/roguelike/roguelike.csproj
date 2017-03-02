@@ -72,6 +72,7 @@
     <Compile Include="Consoles\MapConsole.cs" />
     <Compile Include="Consoles\MessagesConsole.cs" />
     <Compile Include="Consoles\StatConsole.cs" />
+    <Compile Include="Core\Systems\CommandSystem.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Monsters\Kobold.cs" />
     <Compile Include="Entities\Monsters\Monster.cs" />

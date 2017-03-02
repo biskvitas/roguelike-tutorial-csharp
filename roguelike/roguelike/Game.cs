@@ -8,9 +8,11 @@ namespace roguelike
     {
         // Singleton of IRandom used throughout the game when generating random numbers
         public static IRandom Random { get; private set; }
-		public static SchedulingSystem SchedulingSystem { get; private set; }
+        public static readonly SchedulingSystem SchedulingSystem = new SchedulingSystem();
+        public static readonly CommandSystem CommandSystem = new CommandSystem();
+        public static readonly CombatSystem CombatSystem = new CombatSystem();
 
-		public static void Main(string[] args)
+        public static void Main(string[] args)
         {
             int seed = (int)DateTime.UtcNow.Ticks;
             Random = new DotNetRandom(seed);
@@ -21,28 +23,6 @@ namespace roguelike
 
             SadConsole.Engine.Run();
         }
-
-        /*
-        // Event handler for RLNET's Update event
-        private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
-		{
-			bool didPlayerAct = false;
-			RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
-
-			if (!CommandSystem.IsPlayerTurn)
-			{
-				CommandSystem.ActivateMonsters();
-				_renderRequired = true;
-			}
-
-			
-			if (didPlayerAct)
-			{
-				_renderRequired = true;
-				CommandSystem.EndPlayerTurn();
-			}
-		}
-        */
 
         private static void EngineStart(object sender, EventArgs e)
         {

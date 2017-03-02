@@ -5,22 +5,23 @@ using roguelike.Core;
 using roguelike.Entities.Monsters;
 using System.Linq;
 using roguelike.Core.Systems;
+using RogueSharp;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace roguelike.Consoles
 {
     public class MapConsole : SadConsole.Consoles.Console
     {
-        private readonly CombatSystem combatSystem = new CombatSystem();
-
-        RogueSharp.FieldOfView rogueFOV;
+        FieldOfView rogueFOV;
         MapObjects.MapObjectBase[,] mapData;
         public Player Player { get; private set; }
         public Dictionary<Point, Monster> Monsters { get; private set; }
 
-        RogueSharp.Map rogueMap;
-        private DungeonMap detailedMap;
+        Map rogueMap;
+        public DungeonMap detailedMap { get; private set; }
 
-        IReadOnlyCollection<RogueSharp.Cell> previousFOV = new List<RogueSharp.Cell>();
+        IReadOnlyCollection<Cell> previousFOV = new List<Cell>();
 
         public MapConsole(int viewWidth, int viewHeight, int mapWidth, int mapHeight): base(mapWidth, mapHeight)
         {
@@ -67,12 +68,11 @@ namespace roguelike.Consoles
 
             if(Monsters.ContainsKey(newPosition))
             {
-                combatSystem.Attack(Player, Monsters[newPosition]);
+                Game.CombatSystem.Attack(Player, Monsters[newPosition]);
             }
             else
             {
                 //TODO : add door opening here
-
 
                 Player.Position += amount;
                 // TODO: fix this possitioning horror
@@ -109,6 +109,22 @@ namespace roguelike.Consoles
                 } else {
                     monster.Value.InFoV = false;
                 }                  
+            }
+        }
+
+        public void MoveMonster(Monster monster, Cell cell)
+        {
+            //if (detailedMap.SetActorPosition(monster, cell.X, cell.Y)) return;
+            Point newLocation = new Point(cell.X, cell.Y);
+            if (Player.Position.X == cell.X && Player.Position.Y == cell.Y)
+            {
+                Game.CombatSystem.Attack(monster, GameWorld.DungeonScreen.MapConsole.Player);
+            }
+            else if(rogueMap.IsWalkable(cell.X, cell.Y) && !Monsters.ContainsKey(newLocation))
+            {            
+                Monsters.Remove(new Point(monster.Position.X, monster.Position.Y));
+                monster.Position = newLocation;
+                Monsters.Add(newLocation, monster);
             }
         }
 
@@ -161,6 +177,7 @@ namespace roguelike.Consoles
                                                     TextSurface.RenderArea.Width, TextSurface.RenderArea.Height);
 
             Player.RenderOffset = Position - TextSurface.RenderArea.Location;
+            Game.SchedulingSystem.Add(Player);
         }
 
         public void RemoveMonster(Monster killed)
@@ -169,6 +186,7 @@ namespace roguelike.Consoles
             {
                 if(monster.Value.Equals(killed)) {
                     Monsters.Remove(monster.Key);
+                    Game.SchedulingSystem.Remove(monster.Value);
                     return;
                 }
             }

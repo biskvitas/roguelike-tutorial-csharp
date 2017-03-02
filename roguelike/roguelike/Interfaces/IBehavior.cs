@@ -1,10 +1,10 @@
-﻿using roguelike.Core;
-using roguelike.Systems;
+﻿using roguelike.Core.Systems;
+using roguelike.Entities.Monsters;
 
 namespace roguelike.Interfaces
 {
-	public interface IBehavior
+    public interface IBehavior
 	{
-		//bool Act(Monster monster, CommandSystem commandSystem);
+		bool Act(Monster monster, CombatSystem combatSystem);
 	}
 }

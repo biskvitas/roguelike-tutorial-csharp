@@ -1,10 +1,11 @@
-﻿using roguelike.Interfaces;
+﻿using System;
+using roguelike.Interfaces;
 using SadConsole;
 using SadConsole.Game;
 
 namespace roguelike.Entities
 {
-    public class Entity : GameObject, IActor
+    public class Entity : GameObject, IActor, IScheduleable
     {
         public int Attack { get; set; }
         public int AttackChance { get; set; }
@@ -16,6 +17,14 @@ namespace roguelike.Entities
         public int MaxHealth { get; set; }
         public string Name { get; set; }
         public int Speed { get; set; }
+
+        public int Time
+        {
+            get
+            {
+                return Speed;
+            }
+        }
 
         public Entity(Font font):base(font) { }
     }

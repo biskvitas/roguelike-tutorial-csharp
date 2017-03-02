@@ -30,10 +30,10 @@ namespace roguelike.Consoles
         private static readonly int _messageHeight = 5;
 
         private static readonly int _statWidth = 20;
-        private static readonly int _statHeight = 25;
+        private static readonly int _statHeight = 35;
 
         private static readonly int _inventoryWidth = 20;
-        private static readonly int _inventoryHeight = 25;
+        private static readonly int _inventoryHeight = 15;
 
         public DungeonScreen()
         {
@@ -78,22 +78,37 @@ namespace roguelike.Consoles
 
         public override bool ProcessKeyboard(KeyboardInfo info)
         {
+            bool didPlayerAct = false;
+            if (!Game.CommandSystem.IsPlayerTurn)
+            {
+                Game.CommandSystem.ActivateMonsters();
+            }
+            
             if (info.KeysPressed.Contains(AsciiKey.Get(Microsoft.Xna.Framework.Input.Keys.Down)))
             {
                 MapConsole.MovePlayerBy(new Point(0, 1));
+                didPlayerAct = true;
             }
             else if (info.KeysPressed.Contains(AsciiKey.Get(Microsoft.Xna.Framework.Input.Keys.Up)))
             {
                 MapConsole.MovePlayerBy(new Point(0, -1));
+                didPlayerAct = true;
             }
 
             if (info.KeysPressed.Contains(AsciiKey.Get(Microsoft.Xna.Framework.Input.Keys.Right)))
             {
                 MapConsole.MovePlayerBy(new Point(1, 0));
+                didPlayerAct = true;
             }
             else if (info.KeysPressed.Contains(AsciiKey.Get(Microsoft.Xna.Framework.Input.Keys.Left)))
             {
                 MapConsole.MovePlayerBy(new Point(-1, 0));
+                didPlayerAct = true;
+            }
+
+            if (didPlayerAct)
+            {
+                Game.CommandSystem.EndPlayerTurn();
             }
 
             return false;

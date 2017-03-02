@@ -1,19 +1,20 @@
-﻿using System.Linq;
-using roguelike.Core;
+﻿using Microsoft.Xna.Framework;
+using roguelike.Core.Systems;
+using roguelike.Entities;
+using roguelike.Entities.Monsters;
 using roguelike.Interfaces;
-using roguelike.Systems;
 using RogueSharp;
 
-namespace roguelike.Behaviors
+namespace roguelike.Core.Behaviors
 {
-    /*
 	public class StandardMoveAndAttack : IBehavior
 	{
-		public bool Act(Monster monster, CommandSystem commandSystem)
+        private const int AlertStatusLength = 15;
+
+		public bool Act(Monster monster, CombatSystem combatSystem)
 		{
-			DungeonMap dungeonMap = Game.DungeonMap;
-			Player player = Game.Player;
-			FieldOfView monsterFov = new FieldOfView(dungeonMap);
+            Microsoft.Xna.Framework.Point pLoc = GameWorld.DungeonScreen.MapConsole.Player.Position;
+            FieldOfView monsterFov = new FieldOfView(GameWorld.DungeonScreen.MapConsole.detailedMap);
 
 			// If the monster has not been alerted, compute a field-of-view 
 			// Use the monster's Awareness value for the distance in the FoV check
@@ -21,69 +22,54 @@ namespace roguelike.Behaviors
 			// Add a message to the MessageLog regarding this alerted status
 			if (!monster.TurnsAlerted.HasValue)
 			{
-				monsterFov.ComputeFov(monster.X, monster.Y, monster.Awareness, true);
-				if (monsterFov.IsInFov(player.X, player.Y))
+				monsterFov.ComputeFov(monster.Position.X, monster.Position.Y, monster.Awareness, true);
+				if (monsterFov.IsInFov(pLoc.X, pLoc.Y))
 				{
-					Game.MessageLog.Add($"{monster.Name} is eager to fight {player.Name}");
+                    GameWorld.DungeonScreen.MessageConsole.PrintMessage($"{monster.Name} is eager to fight {GameWorld.DungeonScreen.MapConsole.Player.Name}");
 					monster.TurnsAlerted = 1;
 				}
 			}
 
 			if (monster.TurnsAlerted.HasValue)
 			{
-				// Before we find a path, make sure to make the monster and player Cells walkable
-				dungeonMap.SetIsWalkable(monster.X, monster.Y, true);
-				dungeonMap.SetIsWalkable(player.X, player.Y, true);
-
-				PathFinder pathFinder = new PathFinder(dungeonMap);
+                PathFinder pathFinder = new PathFinder(GameWorld.DungeonScreen.MapConsole.detailedMap);
 				Path path = null;
 
 				try
 				{
 					path = pathFinder.ShortestPath(
-					dungeonMap.GetCell(monster.X, monster.Y),
-					dungeonMap.GetCell(player.X, player.Y));
+                    GameWorld.DungeonScreen.MapConsole.detailedMap.GetCell(monster.Position.X, monster.Position.Y),
+                    GameWorld.DungeonScreen.MapConsole.detailedMap.GetCell(pLoc.X, pLoc.Y));
 				}
 				catch (PathNotFoundException)
 				{
-					// The monster can see the player, but cannot find a path to him
-					// This could be due to other monsters blocking the way
-					// Add a message to the message log that the monster is waiting
-					Game.MessageLog.Add($"{monster.Name} waits for a turn");
+                    // The monster can see the player, but cannot find a path to him
+                    // This could be due to other monsters blocking the way
+                    // Add a message to the message log that the monster is waiting
+                    GameWorld.DungeonScreen.MessageConsole.PrintMessage($"{monster.Name} waits for a turn");
 				}
-
-				// Don't forget to set the walkable status back to false
-				dungeonMap.SetIsWalkable(monster.X, monster.Y, false);
-				dungeonMap.SetIsWalkable(player.X, player.Y, false);
 
 				// In the case that there was a path, tell the CommandSystem to move the monster
 				if (path != null)
 				{
 					try
 					{
-						// TODO: This should be path.StepForward() but there is a bug in RogueSharp V3
-						// The bug is that a Path returned from a PathFinder does not include the source Cell
-						commandSystem.MoveMonster(monster, path.Steps.First());
+						GameWorld.DungeonScreen.MapConsole.MoveMonster(monster, path.StepForward());
 					}
 					catch (NoMoreStepsException)
 					{
-						Game.MessageLog.Add($"{monster.Name} growls in frustration");
+                        GameWorld.DungeonScreen.MessageConsole.PrintMessage($"{monster.Name} growls in frustration");
 					}
 				}
 
 				monster.TurnsAlerted++;
 
-				// Lose alerted status every 15 turns. 
-				// As long as the player is still in FoV the monster will stay alert
-				// Otherwise the monster will quit chasing the player.
-				if (monster.TurnsAlerted > 15)
+				if (monster.TurnsAlerted > AlertStatusLength)
 				{
 					monster.TurnsAlerted = null;
 				}
 			}
 			return true;
-		}
-      
-	}
-    */
+		}      
+    }
 }

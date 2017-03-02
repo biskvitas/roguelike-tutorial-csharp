@@ -49,6 +49,7 @@ namespace roguelike.Core
                             Monster monster = new Kobold(1);
                             monster.Position = (Point)randomRoomLocation;                 
                             monster.RenderOffset = renderOffset;
+                            Game.SchedulingSystem.Add(monster);
                             monsters.Add(monster.Position, monster);
                         }
                     }
@@ -91,25 +92,6 @@ namespace roguelike.Core
             return false;
         }
 
-        /*       
-        // This method will be called any time we move the player to update field-of-view
-        public void UpdatePlayerFieldOfView()
-        {
-            Player player = Game.Player;
-            // Compute the field-of-view based on the player's location and awareness
-            ComputeFov(player.X, player.Y, player.Awareness, true);
-            // Mark all cells in field-of-view as having been explored
-            foreach (Cell cell in GetAllCells())
-            {
-                if (IsInFov(cell.X, cell.Y))
-                {
-                    SetCellProperties(cell.X, cell.Y, cell.IsTransparent, cell.IsWalkable, true);
-                }
-            }
-        }
-
-         */
-
         // A helper method for setting the IsWalkable property on a Cell
         public void SetIsWalkable(int x, int y, bool isWalkable)
         {
@@ -118,25 +100,6 @@ namespace roguelike.Core
         }
 
         /*
-        // Called by MapGenerator after we generate a new map to add the player to the map
-        public void AddPlayer(Player player)
-        {
-			Game.SchedulingSystem.Add(player);
-		}
-        
-        public void AddMonster(Monster monster)
-        {
-			Game.SchedulingSystem.Add(monster);
-		}
-
-        public void RemoveMonster(Monster monster)
-		{
-			_monsters.Remove(monster);
-			// After removing the monster from the map, make sure the cell is walkable again
-			SetIsWalkable(monster.X, monster.Y, true);
-			Game.SchedulingSystem.Remove(monster);
-		}
-
 		public Monster GetMonsterAt(int x, int y)
 		{
 			return _monsters.FirstOrDefault(m => m.X == x && m.Y == y);
