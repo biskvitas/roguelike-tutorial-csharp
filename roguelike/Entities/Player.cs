@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using roguelike.Interfaces;
 using roguelike.Utils;
 using SadConsole;
 using SadConsole.Consoles;
-using SadConsole.Game;
 
 namespace roguelike.Entities
 {

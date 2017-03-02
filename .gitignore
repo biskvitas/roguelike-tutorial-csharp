@@ -46,7 +46,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-/roguelike/roguelike/bin
-/roguelike/packages
-/roguelike/roguelike/obj/Debug
+/roguelike/bin
+/packages
+/roguelike/obj/Debug
 **/*.suo

@@ -4,10 +4,6 @@ using roguelike.Entities.Monsters;
 using roguelike.Utils;
 using SadConsole;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace roguelike.Consoles
 {

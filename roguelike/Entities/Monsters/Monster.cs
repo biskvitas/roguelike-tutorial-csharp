@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using roguelike.Core.Behaviors;
-using roguelike.Core.Systems;
-using roguelike.Interfaces;
 using SadConsole;
 
 namespace roguelike.Entities.Monsters

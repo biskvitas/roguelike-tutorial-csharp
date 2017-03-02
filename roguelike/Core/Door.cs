@@ -1,17 +1,15 @@
-﻿using roguelike.Interfaces;
-using RLNET;
-using RogueSharp;
-using roguelike.Utils;
+﻿using RogueSharp;
 
 namespace roguelike.Core
 {
-	public class Door
+    public class Door
 	{
+        /*
 		public Door()
 		{
 			Symbol = '+';
-   //         Color = Colors.Door;
-			//BackgroundColor = Colors.DoorBackground;
+            Color = Colors.Door;
+			BackgroundColor = Colors.DoorBackground;
 		}
 		public bool IsOpen { get; set; }
 
@@ -39,5 +37,6 @@ namespace roguelike.Core
 
 			console.Set(X, Y, Color, BackgroundColor, Symbol);
 		}
+        */
 	}
 }

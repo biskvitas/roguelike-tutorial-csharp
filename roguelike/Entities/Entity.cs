@@ -1,5 +1,4 @@
-﻿using System;
-using roguelike.Interfaces;
+﻿using roguelike.Interfaces;
 using SadConsole;
 using SadConsole.Game;
 

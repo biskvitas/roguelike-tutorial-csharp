@@ -1,5 +1,4 @@
-﻿using roguelike.Core;
-using RogueSharp;
+﻿using RogueSharp;
 using System;
 using System.Linq;
 

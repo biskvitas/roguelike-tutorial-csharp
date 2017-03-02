@@ -1,7 +1,6 @@
 ﻿using roguelike.Entities;
 using roguelike.Entities.Monsters;
 using roguelike.Interfaces;
-using RogueSharp;
 
 namespace roguelike.Core.Systems
 {

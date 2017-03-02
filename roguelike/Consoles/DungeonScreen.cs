@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using roguelike.Consoles;
 using SadConsole.Consoles;
 using SadConsole.Input;
-using System;
 using Console = SadConsole.Consoles.Console;
 
 namespace roguelike.Consoles

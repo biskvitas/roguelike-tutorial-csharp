@@ -1,13 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using roguelike.Core.Systems;
-using roguelike.Entities;
+﻿using roguelike.Core.Systems;
 using roguelike.Entities.Monsters;
 using roguelike.Interfaces;
 using RogueSharp;
 
 namespace roguelike.Core.Behaviors
 {
-	public class StandardMoveAndAttack : IBehavior
+    public class StandardMoveAndAttack : IBehavior
 	{
         private const int AlertStatusLength = 15;
 
